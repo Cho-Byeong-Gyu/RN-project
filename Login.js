@@ -31,7 +31,7 @@ class LoginScreen extends Component {
               <Image source={NaverLogoIMG} style={styles.naverLogo}/>
               <Text style={styles.naverText}> 네이버 로그인 </Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.kakaoLogin} onPress={() => this.props.navigation.navigate('Main')}>
+          <TouchableOpacity style={styles.kakaoLogin} onPress={() => this.props.navigation.navigate('메인')}>
               <Image source={KakaoLogoIMG} style={styles.kakaoLogo}/>
               <Text style={styles.kakaoText}> 카카오 로그인 </Text>
           </TouchableOpacity>

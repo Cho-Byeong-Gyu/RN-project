@@ -11,6 +11,8 @@ import HomeScreen from './Home';
 import SearchScreen from './Search';
 import FavoriteListScreen from './FavoriteList';
 import MyInfoScreen from './MyInfo';
+import MyInfoModifyScreen from './MyInfoModify';
+
 
 // 이미지
 import HomeIconIMG from './Image/홈_아이콘.png';
@@ -69,7 +71,7 @@ MainScreen = () => {
             })}
             >
                 <Tab.Screen name="홈" component={HomeScreen} />
-                <Tab.Screen name="검색" component={SearchScreen} initialRouteName='검색'/>
+                <Tab.Screen name="검색" component={SearchScreen}/>
                 <Tab.Screen name="찜목록" component={FavoriteListScreen} />
                 <Tab.Screen name="내정보" component={MyInfoScreen} />
             </Tab.Navigator>
@@ -80,9 +82,10 @@ class App extends Component {
     render() {
         return(
             <NavigationContainer>
-                <Stack.Navigator initialRouteName='Login'  screenOptions={{headerShown: false}}>
-                    <Stack.Screen name="Main" component={MainScreen}/>
-                    <Stack.Screen name="Login" component={LoginScreen}/>
+                <Stack.Navigator initialRouteName='로그인'  screenOptions={{headerShown: false}}>
+                    <Stack.Screen name="메인" component={MainScreen}/>
+                    <Stack.Screen name="로그인" component={LoginScreen}/>
+                    <Stack.Screen name="내정보수정" component={MyInfoModifyScreen}  />
                 </Stack.Navigator>
             </NavigationContainer>
     )
