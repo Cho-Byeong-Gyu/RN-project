@@ -12,6 +12,10 @@ import SearchScreen from './Search';
 import FavoriteListScreen from './FavoriteList';
 import MyInfoScreen from './MyInfo';
 import MyInfoModifyScreen from './MyInfoModify';
+import HouseInfoScreen from './HouseInfo';
+import ReservationScreen from './Reservation';
+import HouseAddScreen from './HouseAdd';
+import ReviewScreen from './Review';
 
 
 // 이미지
@@ -85,7 +89,11 @@ class App extends Component {
                 <Stack.Navigator initialRouteName='로그인'  screenOptions={{headerShown: false}}>
                     <Stack.Screen name="메인" component={MainScreen}/>
                     <Stack.Screen name="로그인" component={LoginScreen}/>
-                    <Stack.Screen name="내정보수정" component={MyInfoModifyScreen}  />
+                    <Stack.Screen name="예약" component={ReservationScreen} />
+                    <Stack.Screen name="후기" component={ReviewScreen} />
+                    <Stack.Screen name="내정보수정" component={MyInfoModifyScreen} />
+                    <Stack.Screen name="숙소정보" component={HouseInfoScreen} />
+                    <Stack.Screen name="숙소등록" component={HouseAddScreen} />
                 </Stack.Navigator>
             </NavigationContainer>
     )
