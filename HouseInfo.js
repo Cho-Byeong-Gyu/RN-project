@@ -17,18 +17,18 @@ class HouseInfoScreen extends Component {
   render() {
     return (
         <LinearGradient
-        colors={['#E6EAFF', '#FCFDFF']} 
+        colors={['#E8ECFF', '#FFFFFF']} 
         style={styles.linearGradient} 
         start={{ x: 0, y: 0 }} 
-        end={{ x: 0, y: 0.88 }} >
-            <ScrollView style={styles.background} showsHorizontalScrollIndicator={false}>
+        end={{ x: 0, y: 0.8}} >
+            <ScrollView style={styles.background} showsVerticalScrollIndicator={false}>
             <View style={styles.container}>
                 <View style={styles.houseIMGView}  >
                     <ScrollView 
                         horizontal={true}
                         showsHorizontalScrollIndicator={false}>
                             <ImageBackground style={styles.houseIMG} source={houseIMG1}>
-                            <TouchableOpacity style={styles.fixedBackButton} onPress={() => this.props.navigation.navigate('검색')}>
+                            <TouchableOpacity style={styles.fixedBackButton} onPress={() => this.props.navigation.goBack()}>
                                 <Image style={styles.backBtnIcon} source={backBtnIMG}/>  
                             </TouchableOpacity>
                             <TouchableOpacity style={styles.fixedFavoriteButton}>
@@ -37,7 +37,7 @@ class HouseInfoScreen extends Component {
                             </ImageBackground>
                          
                             <ImageBackground style={styles.houseIMG} source={houseIMG2}>
-                            <TouchableOpacity style={styles.fixedBackButton} onPress={() => this.props.navigation.navigate('검색')}>
+                            <TouchableOpacity style={styles.fixedBackButton}  onPress={() => this.props.navigation.goBack()}>
                                 <Image style={styles.backBtnIcon} source={backBtnIMG}/>  
                             </TouchableOpacity>
                             <TouchableOpacity style={styles.fixedFavoriteButton}>
@@ -67,8 +67,8 @@ class HouseInfoScreen extends Component {
 
                                         
                     <View >
-                        <Text style={styles.hostAttention}> 호스트님의 선호 관심온도</Text>
-                        <Text style={styles.hostAttentionText}> 5 °C </Text>
+                        <Text style={styles.hostAttention}> 최대 인원</Text>
+                        <Text style={styles.hostAttentionText}> 2명 </Text>
                     </View>
 
                     <View >
@@ -89,20 +89,7 @@ class HouseInfoScreen extends Component {
                         </View>
                     </View>
                  
-                    <View >
-                        <Text style={styles.tagTextView}> 이런건 챙겨와주세요! </Text>
-                        <View style={styles.tagView}>
-                        <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-                            <Text style={styles.tagText}> #매너 </Text>
-                            <Text style={styles.tagText}> #인성 </Text>
-                            <Text style={styles.tagText}> #개념 </Text>
-                            <Text style={styles.tagText}> #핸드폰 충전기 </Text>
-                            <Text style={styles.tagText}> #면도기 </Text>
-                            <Text style={styles.tagText}> #고데기 </Text>
-                            <Text style={styles.tagTextmargin}> </Text>
-                        </ScrollView>
-                        </View>
-                    </View>
+
 
                     <View style={styles.locationView} >
                         <View style={styles.mapView}>
@@ -118,13 +105,6 @@ class HouseInfoScreen extends Component {
                     <View >
                         <Text style={styles.phoneNumber}> 연락처 </Text>
                         <Text style={styles.phoneNumberText}> 0504-1122-3344 </Text>
-                    </View>
-                                           
-                    <View >
-                        <Text style={styles.explanation}> ※ 관심온도란?</Text>
-                        <Text style={styles.explanationText}> 0: 여행에 거의 관여하지 않으십니다.</Text>
-                        <Text style={styles.explanationText}> 5: 소극적, 소극적이지도 적극적이지도 않습니다.</Text>
-                        <Text style={styles.explanationText}> 10: 여행 가이드에 적극적이십니다.</Text>
                     </View>
 
                     <Text style={styles.houseRuleText}> 숙소 이용규칙 </Text>
@@ -251,7 +231,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     introText: {                               // 소개글 제목 텍스트
-        marginTop: '6.6%',
+        marginTop: '8%',
         paddingLeft: '10%',
         fontSize: 22,
         width: '100%',
@@ -263,22 +243,22 @@ const styles = StyleSheet.create({
         // backgroundColor: 'gray',
     },
     locationView: {                            // 숙소 위치 도로명과 미리보기 화면 담는 View
-        alignItems: 'center',
+        alignItems: 'flex-start',
+        paddingLeft: '9.8%',    
     },
     mapView: {                                 // 숙소위치 제목 텍스트와 지도보러가기 텍스트 가로배치로 담는 View
         flexDirection: 'row',
-        alignContent: 'center',
+        alignitems: 'center',
         // backgroundColor:'gray',
     },
     location: {                                // 숙소 위치 텍스트
         width: '74%',
-        marginTop: '6.6%',
-        paddingLeft: '9.2%',    
+        marginTop: '10%',
         fontSize: 22,
         // backgroundColor:'yellow',
     },
     mapTouchView: {                            // 지도 보러가기 터치 View
-        marginTop: '7%',
+        marginTop: '11%',
         width: '26%',
     },
     map: {                                     // 지도 보러가기 텍스트
@@ -287,20 +267,20 @@ const styles = StyleSheet.create({
         width: '100%',
         // backgroundColor: 'green'
     },
-    locationText: {                            // 도로명 텍스트          
+    locationText: {                            // 도로명 본문 텍스트          
         width: '100%',
-        marginTop: '3.3%',
-        paddingLeft: '9.2%',    
+        marginTop: '4.4%',
         fontSize: 18,
     },
     locationMap: {                             // 지도 미리보기 화면
-        width: '80%',
-        height: 300,    
-        marginTop: '4%',
+        width: '68%',
+        height: 210,    
+        marginLeft: '2.2%',
+        marginTop: '10%',
         borderRadius: 15,
     },
     phoneNumber: {                             // 연락처 텍스트
-        marginTop: '8%',
+        marginTop: '10%',
         marginLeft: '8.8%',
         fontSize: 22,
     },
@@ -328,7 +308,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
-        elevation: 5,                         // 높이를 설정하여 그림자 생성
+        elevation: 5,                       
         shadowColor: '#4285F4',
         shadowRadius: 10,
     },
@@ -354,7 +334,7 @@ const styles = StyleSheet.create({
         height: 120,
     },
     hostAttention:{                          // '호스트님의 선호 관심온도' 텍스트
-        marginTop: '6.6%',
+        marginTop: '8%',
         paddingLeft: '9%',
         fontSize: 22,
         width: '100%',
@@ -365,21 +345,9 @@ const styles = StyleSheet.create({
         fontSize: 20,
         color: '#4285F4',
     },
-    explanation: {                           // 관심온도란? 텍스트
-        fontSize: 18,
-        marginTop: '6.6%',
-        marginBottom: '1%',
-        marginLeft: '9.2%',
-        color: '#C2C2C2'
-    },
-    explanationText: {                       // 관심온도 설명 텍스트
-        fontSize: 12,
-        marginTop: '1%',
-        marginLeft: '10%',
-        color: '#C2C2C2'
-    },
-    tagTextView:{                            // 무료제공 서비스, 이런건 챙겨와주세요! 텍스트
-        marginTop: '6.6%',
+
+    tagTextView:{                            // 무료제공 서비스, 이런건 챙겨와주세요! 
+        marginTop: '8.8%',
         paddingLeft: '9%',
         fontSize: 22,
         width: '100%',
@@ -390,8 +358,8 @@ const styles = StyleSheet.create({
         marginLeft: '9.2%',
         width: '80%',
     },
-    tagText: {                               // 무료제공서비스, 태그 담는 View
-        fontSize: 14,
+    tagText: {                               // 무료제공서비스, 태그 담는 View 텍스트
+        fontSize: 16,
         color: '#4285F4',  
     },
     tagTextmargin: {                         // 태그 텍스트 스크롤뷰 마진
@@ -422,7 +390,7 @@ const styles = StyleSheet.create({
     houseRuleOptionTextMargin: {              // 숙소 이용규칙 하단 마진
         marginBottom: '1%',
     },
-    ruleAlertText: {                          // 숙소 이용규칙 패널디에 대한 텍스트
+    ruleAlertText: {                          // 숙소 이용규칙 패널티에 대한 텍스트
         fontSize: 14,
         width: 340,
         color: '#4285F4',

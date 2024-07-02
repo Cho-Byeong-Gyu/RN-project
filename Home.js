@@ -27,11 +27,11 @@ class HomeScreen extends Component {
   render() {
     return (
         <LinearGradient
-        colors={['#E6EAFF', '#FCFDFF']} 
+        colors={['#E8ECFF', '#FFFFFF']} 
         style={styles.linearGradient} 
-        start={{ x: 0, y: 0 }} 
-        end={{ x: 0, y: 0.88 }} >
-            <ScrollView style={styles.background} showsHorizontalScrollIndicator={false}>
+        start={{ x: 0, y: 0.8 }} 
+        end={{ x: 0, y: 0}} >
+            <ScrollView style={styles.background} showsVerticalScrollIndicator={false}>
             <View style={styles.container}>
                 <View style={styles.search}>
                     <Image style={styles.searchIcon} source={searchIconIMG}/>  

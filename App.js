@@ -13,9 +13,11 @@ import FavoriteListScreen from './FavoriteList';
 import MyInfoScreen from './MyInfo';
 import MyInfoModifyScreen from './MyInfoModify';
 import HouseInfoScreen from './HouseInfo';
+import HouseInfoModifyScreen from './HouseInfoModify';
 import ReservationScreen from './Reservation';
 import HouseAddScreen from './HouseAdd';
 import ReviewScreen from './Review';
+import ReviewAddScreen from './ReviewAdd';
 
 
 // 이미지
@@ -94,6 +96,8 @@ class App extends Component {
                     <Stack.Screen name="내정보수정" component={MyInfoModifyScreen} />
                     <Stack.Screen name="숙소정보" component={HouseInfoScreen} />
                     <Stack.Screen name="숙소등록" component={HouseAddScreen} />
+                    <Stack.Screen name="숙소정보수정" component={HouseInfoModifyScreen} />
+                    <Stack.Screen name="후기작성" component={ReviewAddScreen} />
                 </Stack.Navigator>
             </NavigationContainer>
     )

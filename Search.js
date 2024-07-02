@@ -33,14 +33,16 @@ class SearchScreen extends Component {
 
     return (
         <LinearGradient
-        colors={['#E6EAFF', '#FCFDFF']} 
+        colors={['#E8ECFF', '#FCFDFF']} 
         style={styles.linearGradient} 
-        start={{ x: 0, y: 0 }} 
-        end={{ x: 0, y: 0.88 }} >
-            <ScrollView style={styles.background} showsHorizontalScrollIndicator={false}>
+        start={{ x: 0, y: 0.88 }} 
+        end={{ x: 0, y: 0 }} >
+            <ScrollView 
+            style={styles.background} 
+            showsVerticalScrollIndicator={false}>
             <View style={styles.container}>
-                <View style={styles.searchView}>
-                    <TouchableOpacity style={styles.backBtn} onPress={() => this.props.navigation.navigate('홈')}>
+                <View style={styles.titleView}>
+                <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
                     <Image style={styles.backBtnIcon} source={backBtnIMG} />  
                     </TouchableOpacity>
                     <TextInput style={styles.input} 
@@ -54,13 +56,21 @@ class SearchScreen extends Component {
                 style={styles.filterView} 
                 showsHorizontalScrollIndicator={false}
                 horizontal={true}>
-                    <Text style={styles.filterBtn}> 지역 </Text>
-                    <Text style={styles.filterBtn}> 기간 </Text>
-                    <Text style={styles.filterBtn}> 관심온도 </Text>
-                    <Text style={styles.filterBtn}> 가격 </Text>
-                    <Text style={styles.filterBtn}> 필터링 </Text>
-                    <Text style={styles.filterBtn}></Text>
-                    <Text style={styles.filterBtn}></Text>
+                    <TouchableOpacity style={styles.filterTouch}>
+                        <Text style={styles.filterBtn}> 지역 </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.filterTouch}>
+                        <Text style={styles.filterBtn}> 기간 </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.filterTouch}>
+                        <Text style={styles.filterBtn}> 관심도</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.filterTouch}>
+                        <Text style={styles.filterBtn}> 가격 </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.filterTouch}>
+                        <Text style={styles.filterBtn}> 필터링 </Text>
+                    </TouchableOpacity>
                 </ScrollView>
 
 
@@ -235,7 +245,7 @@ const styles = StyleSheet.create({
     container : {                   // 컴포넌트들 가운데 정렬
         alignItems: 'center', 
     },
-    searchView: {                   // 뒤로가기버튼, 검색창 담는 View
+    titleView: {                   // 뒤로가기버튼, 검색창 담는 View
         flex: 0,
         flexDirection: 'row',
         alignItems: 'center', 
@@ -258,23 +268,35 @@ const styles = StyleSheet.create({
         marginRight:'3%',
         borderRadius: 50, 
         backgroundColor: 'white',
-        elevation: 3, 
+        elevation: 2.2, 
         fontSize: 13,
         paddingLeft: 16,
     },
     filterView: {                   // 필터 컴포넌트 담는 View
         width: '90%',
-        height: 30,
+        height: 40,
         marginBottom: '1.5%',
+        // backgroundColor: 'gray',
+    },
+    filterTouch: {                  // 필터 TouchableOpacity View
+        justifyContent: 'center',
+        height: 40,
+        // backgroundColor: 'blue',
+        marginHorizontal: 7, // 각 필터 버튼의 좌우 마진
     },
     filterBtn: {                    // 필터 버튼
-        paddingLeft: 15,
-        paddingRight: 15,
-        marginRight: '3%',
+        height: 32,
+        paddingRight: 10,
+        paddingLeft: 10,
+        paddingTop: 3,
+        paddingBottom: 3,
+        textAlign: 'center',
+        alignItems: 'center',
         borderRadius: 10, 
         fontSize: 16,
         backgroundColor: 'white',
-        justifyContent: 'center',
+        borderWidth: 0.5,
+        borderColor: '#CBCBCB',
     },
     content: {                      // 검색 리스트 컴포넌트
         width: 370,
@@ -284,6 +306,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         marginTop: '3.3%',
         borderRadius: 20,
+        elevation: 1,
     },
     houseIMG:{                      // 숙소 이미지
         alignItems: 'center',

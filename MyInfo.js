@@ -11,14 +11,14 @@ class MyInfoScreen extends Component {
   render() {
     return (
         <LinearGradient
-        colors={['#E6EAFF', '#FCFDFF']} 
+        colors={['#E8ECFF', '#FFFFFF']} 
         style={styles.linearGradient} 
         start={{ x: 0, y: 0 }} 
-        end={{ x: 0, y: 0.88 }} >
-            <ScrollView style={styles.background} showsHorizontalScrollIndicator={false}>
+        end={{ x: 0, y: 0.8}} >
+            <ScrollView style={styles.background} showsVerticalScrollIndicator={false}>
         <View style={styles.container}>                      
                 <View style={styles.tabBar}>
-                    <TouchableOpacity style={styles.backBtn} onPress={() => this.props.navigation.navigate('홈')}>
+                <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
                         <Image style={styles.backBtnIcon} source={backBtnIMG}/>  
                     </TouchableOpacity>
                     <Text style={styles.myInfoText}> 내정보 </Text>
@@ -40,14 +40,14 @@ class MyInfoScreen extends Component {
 
                 <Text style={styles.settingText}> 설정 </Text>   
 
-                <TouchableOpacity style={styles.settingOption}>
+                <TouchableOpacity style={styles.settingOption}  onPress={() => this.props.navigation.navigate('숙소등록')}>
                     <Text style={styles.optionText}> 숙소정보 등록하기</Text>    
                 </TouchableOpacity>                                    
-                <TouchableOpacity style={styles.settingOption}>
+                <TouchableOpacity style={styles.settingOption} onPress={() => this.props.navigation.navigate('숙소정보수정')}>
                     <Text style={styles.optionText}> 숙소정보 수정하기</Text>    
                 </TouchableOpacity>                                    
                 <TouchableOpacity style={styles.settingOption}>
-                    <Text style={styles.optionText}> 내가 작성한 후기 보러가기</Text>    
+                    <Text style={styles.optionText} onPress={() => this.props.navigation.navigate('후기작성')}> 후기 작성하러가기 </Text>    
                 </TouchableOpacity>                                    
 
             </View>

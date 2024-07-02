@@ -11,14 +11,14 @@ class MyInfoModifyScreen extends Component {
   render() {
     return (
         <LinearGradient
-        colors={['#E6EAFF', '#FCFDFF']} 
+        colors={['#E8ECFF', '#FFFFFF']} 
         style={styles.linearGradient} 
         start={{ x: 0, y: 0 }} 
-        end={{ x: 0, y: 0.88 }} >
-            <ScrollView style={styles.background} showsHorizontalScrollIndicator={false}>
+        end={{ x: 0, y: 0.8}} >
+            <ScrollView style={styles.background} showsVerticalScrollIndicator={false}>
         <View style={styles.container}>                      
                 <View style={styles.tabBar}>
-                    <TouchableOpacity style={styles.backBtn} onPress={() => this.props.navigation.navigate('내정보')}>
+                <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
                         <Image style={styles.backBtnIcon} source={backBtnIMG} />  
                     </TouchableOpacity>
                     <Text style={styles.myInfoText}> 내정보 수정</Text>
@@ -209,6 +209,8 @@ const styles = StyleSheet.create({
     },
     logoutText:{                        // 로그아웃 텍스트
         color: '#4285F4',
+        fontSize: 16,
+        marginTop: '1.1%',
     },
 });
 

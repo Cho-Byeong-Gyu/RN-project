@@ -4,19 +4,13 @@ import LinearGradient from 'react-native-linear-gradient';
 
 //이미지
 import backBtnIMG from './Image/뒤로가기_아이콘.png';
-import houseAddIMG from './Image/사진추가_아이콘.png';
+import houseAddIMG from './Image/사진_아이콘.png';
 import mapIMG from './Image/지도_미리보기.png';
 import houseIMG1 from './Image/여행지1.png';
 import houseIMG2 from './Image/여행지2.png';
-import houseIMG3 from './Image/여행지3.png';
-import houseIMG4 from './Image/여행지4.png';
-import houseIMG5 from './Image/여행지5.png';
-import houseIMG6 from './Image/여행지6.png';
-import houseIMG7 from './Image/여행지7.png';
-import houseIMG8 from './Image/여행지8.png';
-import houseIMG9 from './Image/여행지9.png';
 
-class HouseAddScreen extends Component {
+
+class HouseInfoModifyScreen extends Component {
 
   render() {
 
@@ -32,14 +26,14 @@ class HouseAddScreen extends Component {
                     <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
                     <Image style={styles.backBtnIcon} source={backBtnIMG} />  
                     </TouchableOpacity>
-                    <Text style={styles.houseAddText}> 숙소 등록하기 </Text>
+                    <Text style={styles.houseAddText}> 숙소정보 수정하기 </Text>
                 </View>
 
                 <View style={styles.hostInfoView}> 
                     <View style={styles.hostNameInfoView}>
                         <Text style={styles.hostInfo}> 호스트명 </Text>
                         <TouchableOpacity style={styles.ModifySelectView}>
-                            <Text style={styles.InfoModify}> 입력하기 </Text>
+                            <Text style={styles.InfoModify}> 수정하기 </Text>
                         </TouchableOpacity>
                     </View>
                    <Text style={styles.hostInfoText}> 이진태 </Text>
@@ -47,7 +41,7 @@ class HouseAddScreen extends Component {
                     <View style={styles.hostNameInfoView}>
                         <Text style={styles.hostInfo}> 연락처 </Text>
                         <TouchableOpacity style={styles.ModifySelectView}>
-                            <Text style={styles.InfoModify}> 입력하기 </Text>
+                            <Text style={styles.InfoModify}> 수정하기 </Text>
                         </TouchableOpacity>
                     </View>
                    <Text style={styles.hostInfoText}> 010-1122-3344 </Text>
@@ -55,7 +49,7 @@ class HouseAddScreen extends Component {
                     <View style={styles.hostNameInfoView}>
                         <Text style={styles.hostInfo}> 전체인원 </Text>
                         <TouchableOpacity style={styles.ModifySelectView}>
-                            <Text style={styles.InfoModify}> 입력하기 </Text>
+                            <Text style={styles.InfoModify}> 수정하기 </Text>
                         </TouchableOpacity>
                     </View>
                    <Text style={styles.hostInfoText}> 2명 </Text>
@@ -63,7 +57,7 @@ class HouseAddScreen extends Component {
                     <View style={styles.hostNameInfoView}>
                         <Text style={styles.hostInfo}> 숙소위치 </Text>
                         <TouchableOpacity style={styles.ModifySelectView}>
-                            <Text style={styles.InfoModify}> 입력하기 </Text>
+                            <Text style={styles.InfoModify}> 수정하기 </Text>
                         </TouchableOpacity>
                     </View>
                    <Text style={styles.hostInfoText}> 강원도 속초시 신림면 </Text>
@@ -72,21 +66,22 @@ class HouseAddScreen extends Component {
                     <View style={styles.hostNameInfoView}>
                         <Text style={styles.hostInfo}> 숙소 소개 사진 </Text>
                         <TouchableOpacity style={styles.ModifySelectView}>
-                            <Text style={styles.InfoModify}> 사진 추가 </Text>
+                            <Text style={styles.InfoModify}> 사진 수정 </Text>
                         </TouchableOpacity>
                     </View>
                     <View style={styles.houseIMGView}>
                         <ScrollView style={styles.addHouseIMGView}  
                             showsHorizontalScrollIndicator={false}  
                             horizontal={true}>
-                            <Image style={styles.houseIMG} source={houseAddIMG}/>
+                            <Image style={styles.houseIMG} source={houseIMG1}/>
+                            <Image style={styles.houseIMG} source={houseIMG2}/>
                         </ScrollView>
                     </View>
                     
                     <View style={styles.hostNameInfoView}>
                         <Text style={styles.hostInfo}> 소개글 </Text>
                         <TouchableOpacity style={styles.ModifySelectView}>
-                            <Text style={styles.InfoModify}> 입력하기 </Text>
+                            <Text style={styles.InfoModify}> 수정하기 </Text>
                         </TouchableOpacity>
                     </View>
                    <Text style={styles.hostIntroText}> 강원도 60년 토박이 생활로 어지간한 맛집, 관광지, 
@@ -96,7 +91,7 @@ class HouseAddScreen extends Component {
                     <View style={styles.hostFreeServiceView}>
                         <Text style={styles.hostInfo}> 무료 제공 서비스 </Text>
                         <TouchableOpacity style={styles.ModifySelectView}>
-                            <Text style={styles.InfoModify}> 추가하기 </Text>
+                            <Text style={styles.InfoModify}> 수정하기 </Text>
                         </TouchableOpacity>
                     </View>
                      
@@ -132,8 +127,8 @@ class HouseAddScreen extends Component {
                     <Text style={styles.ruleAlertText}> ※위 규칙을 3회이상 어길 시, 호스트에게 숙박비의 30%에 해당하는 벌금이 발생할 수 있습니다. </Text>
                 </View>
 
-                <TouchableOpacity style={styles.reservationBtn} onPress={() => this.props.navigation.goback()}>
-                    <Text style={styles.reservationBtnText}> 숙소 등록하기</Text>
+                <TouchableOpacity style={styles.reservationBtn} onPress={() => this.props.navigation.navigate('검색')}>
+                    <Text style={styles.reservationBtnText}> 수정 완료</Text>
                 </TouchableOpacity>
 
                 <View style={styles.barMargin}><Text> </Text></View>
@@ -210,20 +205,20 @@ const styles = StyleSheet.create({
     },
     houseIMGView:{                         // 숙소 사진 가운데 정렬 View
         alignItems:'center',
+        justifyContent: 'center',
         flexDirection: 'row',
-        width: '53%',
-        // backgroundColor: 'yellow',
+        width: '90%'
     },
     addHouseIMGView:{                      // 숙소 사진등록 View
         marginTop: '10%',
         marginBottom: '4%',
         backgroundColor:'#E2E2E2',
-    },
-    houseIMG: {                        // 숙소 사진 등록
         width: 200,
         height: 200,
-        alignItems:'center',
-        justifyContent: 'center',
+    },
+    houseIMG: {                         // 숙소 사진 등록
+        width: 200,
+        height: 200,
     },
     hostInfoText: {                        // 호스트 정보 입력 value 텍스트
         marginTop: '2.2%',
@@ -325,4 +320,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default HouseAddScreen;
+export default HouseInfoModifyScreen;

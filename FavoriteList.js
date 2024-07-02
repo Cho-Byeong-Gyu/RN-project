@@ -5,22 +5,25 @@ import LinearGradient from 'react-native-linear-gradient';
 //이미지
 import backBtnIMG from './Image/뒤로가기_아이콘.png';
 import FavoriteIconIMG from './Image/체크된_즐겨찾기_아이콘.png';
+import houseIMG1 from './Image/여행지1.png';
+import houseIMG2 from './Image/여행지2.png';
 import houseIMG3 from './Image/여행지3.png';
+import houseIMG4 from './Image/여행지4.png';
+import houseIMG5 from './Image/여행지5.png';
 import houseIMG6 from './Image/여행지6.png';
 import houseIMG7 from './Image/여행지7.png';
 import houseIMG8 from './Image/여행지8.png';
 import houseIMG9 from './Image/여행지9.png';
-import houseIMG10 from './Image/여행지10.png';
 
 class FavoriteListScreen extends Component {
   render() {
     return (
         <LinearGradient
-        colors={['#E6EAFF', '#FCFDFF']} 
+        colors={['#E8ECFF', '#FFFFFF']} 
         style={styles.linearGradient} 
-        start={{ x: 0, y: 0 }} 
-        end={{ x: 0, y: 0.88 }} >
-            <ScrollView style={styles.background} showsHorizontalScrollIndicator={false}>
+        start={{ x: 0, y: 0.8 }} 
+        end={{ x: 0, y: 0}} >
+            <ScrollView style={styles.background} showsVerticalScrollIndicator={false}>
             <View style={styles.container}>
                 <View style={styles.tabBar}>
                     <TouchableOpacity style={styles.backBtn} onPress={() => this.props.navigation.navigate('홈')}>
@@ -29,7 +32,7 @@ class FavoriteListScreen extends Component {
                     <Text style={styles.reservationStateText}> 나의 예약 현황 </Text>
                 </View>
 
-                <View style={styles.content}>
+                <TouchableOpacity style={styles.content} onPress={() => this.props.navigation.navigate('숙소정보')} >
                     <Image style={styles.houseIMG} source={houseIMG3}></Image>
                     <View style={styles.Info}>
                         <Text style={styles.Name}> ㅇㅇㅇ님의 거주지</Text>
@@ -37,84 +40,105 @@ class FavoriteListScreen extends Component {
                         <Text style={styles.review}> 평점 및 후기</Text>
                         <Text style={styles.reservationState}> 요청수락 대기중..</Text>
                     </View>
-                </View>
+                </TouchableOpacity>
 
                 <Text style={styles.myFavoriteListText}> 내가 찜한 숙소 </Text>
              
-                <View style={styles.content}>
+                <TouchableOpacity style={styles.content} onPress={() => this.props.navigation.navigate('숙소정보')} >
+                    <Image style={styles.houseIMG} source={houseIMG4}></Image>
+                    <View style={styles.houseInfo}>
+                        <Text style={styles.houseName}> ㅇㅇㅇ님의 거주지</Text>
+                        <Text style={styles.houseAddress}> 상세주소</Text>
+                        <Text style={styles.houseReview}> 평점(후기)</Text>
+                    </View>
+                    <TouchableOpacity style={styles.FavoriteView}>
+                      <View style={styles.IconLayout}>
+                        <Image 
+                            style={styles.FavoriteIcon} 
+                            source={FavoriteIconIMG}/>
+                      </View>
+                    </TouchableOpacity>
+                </TouchableOpacity>
+
+                <TouchableOpacity style={styles.content} onPress={() => this.props.navigation.navigate('숙소정보')} >
+                    <Image style={styles.houseIMG} source={houseIMG5}></Image>
+                    <View style={styles.houseInfo}>
+                        <Text style={styles.houseName}> ㅇㅇㅇ님의 거주지</Text>
+                        <Text style={styles.houseAddress}> 상세주소</Text>
+                        <Text style={styles.houseReview}> 평점(후기)</Text>
+                    </View>
+                    <TouchableOpacity style={styles.FavoriteView}>
+                      <View style={styles.IconLayout}>
+                        <Image 
+                            style={styles.FavoriteIcon} 
+                            source={FavoriteIconIMG}/>
+                      </View>
+                    </TouchableOpacity>
+                </TouchableOpacity>
+
+                <TouchableOpacity style={styles.content} onPress={() => this.props.navigation.navigate('숙소정보')} >
                     <Image style={styles.houseIMG} source={houseIMG6}></Image>
                     <View style={styles.houseInfo}>
                         <Text style={styles.houseName}> ㅇㅇㅇ님의 거주지</Text>
                         <Text style={styles.houseAddress}> 상세주소</Text>
                         <Text style={styles.houseReview}> 평점(후기)</Text>
                     </View>
-                    <TouchableOpacity>
-                    <Image 
-                        style={styles.FavoriteIcon} 
-                        source={FavoriteIconIMG}/>
-
+                    <TouchableOpacity style={styles.FavoriteView}>
+                      <View style={styles.IconLayout}>
+                        <Image 
+                            style={styles.FavoriteIcon} 
+                            source={FavoriteIconIMG}/>
+                      </View>
                     </TouchableOpacity>
-                </View>
-             
-                <View style={styles.content}>
+                </TouchableOpacity>
+
+                <TouchableOpacity style={styles.content} onPress={() => this.props.navigation.navigate('숙소정보')} >
                     <Image style={styles.houseIMG} source={houseIMG7}></Image>
                     <View style={styles.houseInfo}>
                         <Text style={styles.houseName}> ㅇㅇㅇ님의 거주지</Text>
                         <Text style={styles.houseAddress}> 상세주소</Text>
                         <Text style={styles.houseReview}> 평점(후기)</Text>
                     </View>
-                    <TouchableOpacity>
-                    <Image 
-                        style={styles.FavoriteIcon} 
-                        source={FavoriteIconIMG}/>
-
+                    <TouchableOpacity style={styles.FavoriteView}>
+                      <View style={styles.IconLayout}>
+                        <Image 
+                            style={styles.FavoriteIcon} 
+                            source={FavoriteIconIMG}/>
+                      </View>
                     </TouchableOpacity>
-                </View>
-             
-                <View style={styles.content}>
+                </TouchableOpacity>
+
+                <TouchableOpacity style={styles.content} onPress={() => this.props.navigation.navigate('숙소정보')} >
                     <Image style={styles.houseIMG} source={houseIMG8}></Image>
                     <View style={styles.houseInfo}>
                         <Text style={styles.houseName}> ㅇㅇㅇ님의 거주지</Text>
                         <Text style={styles.houseAddress}> 상세주소</Text>
                         <Text style={styles.houseReview}> 평점(후기)</Text>
                     </View>
-                    <TouchableOpacity>
-                    <Image 
-                        style={styles.FavoriteIcon} 
-                        source={FavoriteIconIMG}/>
-
+                    <TouchableOpacity style={styles.FavoriteView}>
+                      <View style={styles.IconLayout}>
+                        <Image 
+                            style={styles.FavoriteIcon} 
+                            source={FavoriteIconIMG}/>
+                      </View>
                     </TouchableOpacity>
-                </View>
-             
-                <View style={styles.content}>
+                </TouchableOpacity>
+
+                <TouchableOpacity style={styles.content} onPress={() => this.props.navigation.navigate('숙소정보')} >
                     <Image style={styles.houseIMG} source={houseIMG9}></Image>
                     <View style={styles.houseInfo}>
                         <Text style={styles.houseName}> ㅇㅇㅇ님의 거주지</Text>
                         <Text style={styles.houseAddress}> 상세주소</Text>
                         <Text style={styles.houseReview}> 평점(후기)</Text>
                     </View>
-                    <TouchableOpacity>
-                    <Image 
-                        style={styles.FavoriteIcon} 
-                        source={FavoriteIconIMG}/>
-
+                    <TouchableOpacity style={styles.FavoriteView}>
+                      <View style={styles.IconLayout}>
+                        <Image 
+                            style={styles.FavoriteIcon} 
+                            source={FavoriteIconIMG}/>
+                      </View>
                     </TouchableOpacity>
-                </View>
-             
-                <View style={styles.content}>
-                    <Image style={styles.houseIMG} source={houseIMG10}></Image>
-                    <View style={styles.houseInfo}>
-                        <Text style={styles.houseName}> ㅇㅇㅇ님의 거주지</Text>
-                        <Text style={styles.houseAddress}> 상세주소</Text>
-                        <Text style={styles.houseReview}> 평점(후기)</Text>
-                    </View>
-                    <TouchableOpacity>
-                    <Image 
-                        style={styles.FavoriteIcon} 
-                        source={FavoriteIconIMG}/>
-
-                    </TouchableOpacity>
-                </View>
+                </TouchableOpacity>
                
 
                 <View style={styles.barMargin}><Text> </Text></View>
@@ -166,6 +190,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         marginTop: '3.3%',
         borderRadius: 20,
+        elevation: 1,
     },
     houseIMG: {                      // 숙소 이미지
         alignItems: 'center',
