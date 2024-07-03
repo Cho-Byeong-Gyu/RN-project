@@ -8,6 +8,17 @@ import profileIMG from './Image/프로필_아이콘.png';
 import nextBtnIMG from './Image/Next버튼_아이콘.png';
 
 class MyInfoModifyScreen extends Component {
+
+    state={
+        name: '김갑순',
+        gender: '여자',
+        age: '64세',
+        email: 'rkqtns61@gmail.com',
+        phoneNumber: '010-1234-5678',
+        birthday: '1961년 7월 28일',
+    }
+
+
   render() {
     return (
         <LinearGradient
@@ -30,60 +41,43 @@ class MyInfoModifyScreen extends Component {
                             <Image style={styles.profileIMG} source={profileIMG}/>
                         </TouchableOpacity>    
                         <View style={styles.columnLayout}>
-                        <Text style={styles.nameInfo}> 박양순님 </Text>
+                        <Text style={styles.nameInfo}> {this.state.name}</Text>
                         <TouchableOpacity>
                             <Text style={styles.changeIMGText}> 프로필 사진 변경하기</Text>
                         </TouchableOpacity>
                         </View>
                     </View>     
-                    <View>
+
+                    <View styel={styles.InfoView}>
                         <View style={styles.infoRowLayout}>
                             <Text style={styles.infoText}>이름</Text>
-                            <TouchableOpacity>
-                            <Text style={styles.infoChangeBtn}> 수정하기</Text>
-                            </TouchableOpacity>
+                            <Text style={styles.infoInputText}> {this.state.name} </Text>
                         </View>
-                        <Text style={styles.infoInputText}>박양순</Text>
 
                         <View style={styles.infoRowLayout}>
-                            <Text style={styles.infoText}>나이</Text>
-                            <TouchableOpacity>
-                            <Text style={styles.infoChangeBtn}> 수정하기</Text>
-                            </TouchableOpacity>
+                            <Text style={styles.infoText}>이메일</Text>
+                            <Text style={styles.infoInputText}> {this.state.email} </Text>
                         </View>
-                        <Text style={styles.infoInputText}>64세</Text>
+
+                        {/* <View style={styles.infoRowLayout}>
+                            <Text style={styles.infoText}>나이</Text>
+                            <Text style={styles.infoInputText}> {this.state.age} </Text>
+                        </View>
        
                         <View style={styles.infoRowLayout}>
                             <Text style={styles.infoText}>성별</Text>
-                            <TouchableOpacity>
-                            <Text style={styles.infoChangeBtn}> 수정하기</Text>
-                            </TouchableOpacity>
+                            <Text style={styles.infoInputText}> {this.state.gender} </Text>
                         </View>
-                        <Text style={styles.infoInputText}>여자</Text>
-       
+        */}
                         <View style={styles.infoRowLayout}>
                             <Text style={styles.infoText}>연락처</Text>
-                            <TouchableOpacity>
-                            <Text style={styles.infoChangeBtn}> 수정하기</Text>
-                            </TouchableOpacity>
+                            <Text style={styles.infoInputText}> {this.state.phoneNumber} </Text>
                         </View>
-                        <Text style={styles.infoInputText}>010-1122-3344</Text>
        
-                        <View style={styles.infoRowLayout}>
-                            <Text style={styles.infoText}>거주지</Text>
-                            <TouchableOpacity>
-                            <Text style={styles.infoChangeBtn}> 수정하기</Text>
-                            </TouchableOpacity>
-                        </View>
-                        <Text style={styles.infoInputText}>경기도 ㅇㅇ시 ㅇㅇ구 ㅇㅇ동</Text>
-       
-                        <View style={styles.infoRowLayout}>
+                        {/* <View style={styles.infoRowLayout}>
                             <Text style={styles.infoText}>출생 연도</Text>
-                            <TouchableOpacity>
-                            <Text style={styles.infoChangeBtn}> 수정하기</Text>
-                            </TouchableOpacity>
-                        </View>
-                        <Text style={styles.infoInputText}>1961년 5월 22일</Text>
+                            <Text style={styles.infoInputText}> {this.state.birthday} </Text>
+                        </View> */}
                     </View>
                 </View>
 
@@ -135,15 +129,17 @@ const styles = StyleSheet.create({
         width: '88%',
     },  
     myInfoCard: {               // 프로필 카드 View
-        width: '92%',
-        height: 720,
+        width: '88%',
         alignItems: 'top',
         flexDirection: 'column',
         backgroundColor: 'white',
-        marginTop: '2.8%',
+        marginTop: '4.4%',
         borderRadius: 20,
         borderWidth: 1.5,
         borderColor: 'gray',
+        alignItems: 'center',
+        paddingBottom: '12%',
+        // backgroundColor:'gray',
     },
     profileIMGView:{            // 프로필 사진 담는 View
         alignItems: 'center',
@@ -153,7 +149,7 @@ const styles = StyleSheet.create({
         height: 100,
         borderRadius: 50,
         borderWidth: 1.5,
-        margin: '5%',
+        margin: '7%',
     },
     profileIMG: {               // 프로필 사진
         borderRadius: 50,
@@ -172,7 +168,7 @@ const styles = StyleSheet.create({
     },
     nameInfo: {                          // 프로필 이름 텍스트
         fontSize: 22,
-        color: 'black',
+        color: '#606060',
         marginTop: '22%',
     },
     changeIMGText: {                     // 프로필사진 변경하기 텍스트
@@ -180,28 +176,30 @@ const styles = StyleSheet.create({
         fontSize: 14,
         marginTop: '3.3%',
     },
+    InfoView:{                           // 프로필 정보 담는 View (프로필사진 아래부분) 
+        alignItems: 'center',
+        width: '94%',
+    },
     infoRowLayout:{
         flexDirection: 'row',
         alignItems: 'flex-end',
-        justifyContent: 'flex-end',
+        width:'92%',
+        // backgroundColor:'gray',
     },
     infoText:{                           // 이름, 나이등 텍스트
-        fontSize: 22,
-        marginTop: '8%',
-        width: '72%',
+        fontSize: 20,
+        marginTop: '12%',
+        width: '26%',
+        // backgroundColor:'yellow',
     },
     infoInputText: {                     // 박양순, 64세등 텍스트
-        fontSize: 14,
-        marginTop: '1.5%',
-        marginLeft: '7%',
+        fontSize: 18,
+        marginTop: '5%',
+        width: '66%',
+        backgroundColor:'white',
+        textAlign: 'right',
     },
-    infoChangeBtn:{                      // 수정하기 버튼
-        color: '#4285F4',
-        alignItems: 'flex-end',
-        marginRight: '7%',
-    },
-    
-    
+
     logoutView:{                         // 로그아웃 텍스트 담는 View
         marginTop: '1%',
         width: '92%',        
@@ -209,8 +207,8 @@ const styles = StyleSheet.create({
     },
     logoutText:{                        // 로그아웃 텍스트
         color: '#4285F4',
-        fontSize: 16,
-        marginTop: '1.1%',
+        fontSize: 20,
+        marginTop: '4.4%',
     },
 });
 

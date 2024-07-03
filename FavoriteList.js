@@ -4,7 +4,9 @@ import LinearGradient from 'react-native-linear-gradient';
 
 //이미지
 import backBtnIMG from './Image/뒤로가기_아이콘.png';
-import FavoriteIconIMG from './Image/체크된_즐겨찾기_아이콘.png';
+import checkFavoriteIconIMG from './Image/체크된_즐겨찾기_아이콘.png';
+import FavoriteIconIMG from './Image/즐겨찾기_아이콘.png';
+import reviewIconIMG from './Image/회색_별_아이콘.png';
 import houseIMG1 from './Image/여행지1.png';
 import houseIMG2 from './Image/여행지2.png';
 import houseIMG3 from './Image/여행지3.png';
@@ -16,8 +18,44 @@ import houseIMG8 from './Image/여행지8.png';
 import houseIMG9 from './Image/여행지9.png';
 
 class FavoriteListScreen extends Component {
-  render() {
-    return (
+
+    state = {
+        places: [                                   // 목록에 띄울 데이터들 관
+            { id: 1, name: "김갑순님의 거주지", address:'강원도 속초시 신림면', reviewScore: "4.2", reviewCount: 48, imageUrl: require('./Image/여행지1.png'), favoriteState: true, price: 43000, reservaionState: false, clearReservation: false },
+            { id: 2, name: "김경민님의 거주지", address:'강원도 원주시 신림면', reviewScore: "3.8", reviewCount: 23, imageUrl: require('./Image/여행지2.png'), favoriteState: true, price: 38000, reservaionState: false,  clearReservation: false },
+            { id: 3, name: "강진석님의 거주지", address:'강원도 철원군 동송읍', reviewScore: "4.0", reviewCount: 31, imageUrl: require('./Image/여행지3.png'), favoriteState: false, price: 88000, reservaionState: false,  clearReservation: false },
+            { id: 4, name: "오진태님의 거주지", address:'강원도 강릉시 옥계면',reviewScore: "4.4", reviewCount: 18, imageUrl: require('./Image/여행지4.png'), favoriteState: true, price: 26000, reservaionState: false,  clearReservation: false },
+            { id: 5, name: "박경숙님의 거주지", address: '경상남도 부산광역시 김해시 진영읍', reviewScore: "4.2", reviewCount: 66, imageUrl: require('./Image/여행지5.png'), favoriteState: false, price: 40000, reservaionState: true,  clearReservation: true },
+            { id: 7, name: "이창민님의 거주지", address:'경상남도 부산광역시 금정구 구서2동',reviewScore: "4.6", reviewCount: 20, imageUrl: require('./Image/여행지6.png'), favoriteState: false, price: 54000, reservaionState: false,  clearReservation: false },
+            { id: 9, name: "오경숙님의 거주지", address:'경상북도 울산광역시 울주군 둔기리', reviewScore: "4.6", reviewCount: 20, imageUrl: require('./Image/여행지8.png'), favoriteState: false, price: 54000, reservaionState: false,  clearReservation: false },
+            { id: 8, name: "양민우님의 거주지", address:'전라남도 전주시 덕진구', reviewScore: "4.6", reviewCount: 20, imageUrl: require('./Image/여행지7.png'), favoriteState: false, price: 54000, reservaionState: false,  clearReservation: false },
+            { id: 10, name: "이정민님의 거주지", address:'경기도 화성시 남양읍', reviewScore: "4.6", reviewCount: 20, imageUrl: require('./Image/여행지9.png'), favoriteState: false, price: 54000, reservaionState: false,  clearReservation: false },
+            { id: 11, name: "박범석님의 거주지", address:'제주특별자치도 서귀포시 남원읍', reviewScore: "4.6", reviewCount: 20, imageUrl: require('./Image/여행지10.png'), favoriteState: false, price: 54000, reservaionState: false,  clearReservation: false },
+            { id: 12, name: "황진영님의 거주지", address:'전라남도 광주광역시 북구 오치1동', reviewScore: "4.6", reviewCount: 20, imageUrl: require('./Image/여행지11.png'), favoriteState: false, price: 54000, reservaionState: false,  clearReservation: false },
+            { id: 13, name: "박우석님의 거주지", address:'전라남도 나주시 영강동', reviewScore: "4.6", reviewCount: 20, imageUrl: require('./Image/여행지12.png'), favoriteState: false, price: 54000, reservaionState: false,  clearReservation: false },
+            { id: 14, name: "이현숙님의 거주지", address:'충천남도 공주시 우성면', reviewScore: "4.6", reviewCount: 20, imageUrl: require('./Image/여행지13.png'), favoriteState: false, price: 54000, reservaionState: false,  clearReservation: false },
+            { id: 15, name: "황지석님의 거주지", address:'충천남도 아산시 신창면 남성리', reviewScore: "4.6", reviewCount: 20, imageUrl: require('./Image/여행지14.png'), favoriteState: false, price: 54000, reservaionState: false,  clearReservation: false },
+            { id: 16, name: "이미연님의 거주지", address:'충천남도 당진시 순성면', reviewScore: "4.6", reviewCount: 20, imageUrl: require('./Image/여행지15.png'), favoriteState: false, price: 54000, reservaionState: false,  clearReservation: false },
+        ],
+    };
+
+    changeFavoriteState = (id) => {                 // 찜버튼 누르면 FavoriteState 상태 바꿔주는 함수
+        const PlacesState = this.state.places.map(place => {
+            if (place.id === id) {                  // 고유 id로 해당 숙소만 판별하여 찜버튼 해제
+                return { ...place, favoriteState: !place.favoriteState };
+            }
+            return place;
+        });
+        this.setState({ places: PlacesState });
+    };
+
+    
+    
+    render() {
+        let ReservationText = '예약완료' 
+        let NoReservationText = '예약 요청중..' 
+
+        return (
         <LinearGradient
         colors={['#E8ECFF', '#FFFFFF']} 
         style={styles.linearGradient} 
@@ -29,117 +67,54 @@ class FavoriteListScreen extends Component {
                     <TouchableOpacity style={styles.backBtn} onPress={() => this.props.navigation.navigate('홈')}>
                         <Image style={styles.backBtnIcon} source={backBtnIMG}/>  
                     </TouchableOpacity>
-                    <Text style={styles.reservationStateText}> 나의 예약 현황 </Text>
+                    <Text style={styles.myFavoriteListText}> 내가 찜한 숙소 </Text>
                 </View>
 
+                {this.state.places.filter(place => place.favoriteState).map((place) => (
                 <TouchableOpacity style={styles.content} onPress={() => this.props.navigation.navigate('숙소정보')} >
-                    <Image style={styles.houseIMG} source={houseIMG3}></Image>
-                    <View style={styles.Info}>
-                        <Text style={styles.Name}> ㅇㅇㅇ님의 거주지</Text>
-                        <Text style={styles.Address}> 상세주소</Text>
-                        <Text style={styles.review}> 평점 및 후기</Text>
-                        <Text style={styles.reservationState}> 요청수락 대기중..</Text>
+                    <Image source={place.imageUrl} style={styles.houseIMG}/>
+                    <View key={place.id} style={styles.Info}>
+                        <View style={styles.Info}>
+                            <Text style={styles.houseName}>{place.name}</Text>
+                            <Text style={styles.houseAddress}>{place.address}</Text>
+                            <View style={styles.houseReviewView}>
+                                <Image style={styles.reviewIcon} source={reviewIconIMG} />
+                                <Text style={styles.houseReview}>{place.reviewScore}</Text>
+                                <Text style={styles.houseReview}>({place.reviewCount})</Text>
+                            </View>
+                            <Text style={styles.housePrice}>{place.price}</Text>
+                        </View>
                     </View>
-                </TouchableOpacity>
-
-                <Text style={styles.myFavoriteListText}> 내가 찜한 숙소 </Text>
-             
-                <TouchableOpacity style={styles.content} onPress={() => this.props.navigation.navigate('숙소정보')} >
-                    <Image style={styles.houseIMG} source={houseIMG4}></Image>
-                    <View style={styles.houseInfo}>
-                        <Text style={styles.houseName}> ㅇㅇㅇ님의 거주지</Text>
-                        <Text style={styles.houseAddress}> 상세주소</Text>
-                        <Text style={styles.houseReview}> 평점(후기)</Text>
-                    </View>
-                    <TouchableOpacity style={styles.FavoriteView}>
-                      <View style={styles.IconLayout}>
-                        <Image 
-                            style={styles.FavoriteIcon} 
-                            source={FavoriteIconIMG}/>
-                      </View>
+                    <TouchableOpacity onPress={() => this.changeFavoriteState(place.id)}>
+                        <Image style={styles.favoriteIcon} source={place.favoriteState ? checkFavoriteIconIMG : FavoriteIconIMG} />
                     </TouchableOpacity>
                 </TouchableOpacity>
+                ))}
 
-                <TouchableOpacity style={styles.content} onPress={() => this.props.navigation.navigate('숙소정보')} >
-                    <Image style={styles.houseIMG} source={houseIMG5}></Image>
-                    <View style={styles.houseInfo}>
-                        <Text style={styles.houseName}> ㅇㅇㅇ님의 거주지</Text>
-                        <Text style={styles.houseAddress}> 상세주소</Text>
-                        <Text style={styles.houseReview}> 평점(후기)</Text>
-                    </View>
-                    <TouchableOpacity style={styles.FavoriteView}>
-                      <View style={styles.IconLayout}>
-                        <Image 
-                            style={styles.FavoriteIcon} 
-                            source={FavoriteIconIMG}/>
-                      </View>
+                    <Text style={styles.myReservationListText}> 나의 예약 현황 </Text>
+            
+                    {this.state.places.filter(place => place.reservaionState).map((place) => (
+                    <TouchableOpacity style={styles.content} onPress={() => this.props.navigation.navigate('숙소정보')} >
+                        <Image source={place.imageUrl} style={styles.houseIMG}/>
+                        <View key={place.id} style={styles.Info}>
+                            <View style={styles.Info}>
+                                <Text style={styles.houseName}>{place.name}</Text>
+                                <Text style={styles.houseAddress}>{place.address}</Text>
+                                <View style={styles.houseReviewView}>
+                                    <Image style={styles.reviewIcon} source={reviewIconIMG} />
+                                    <Text style={styles.houseReview}>{place.reviewScore}</Text>
+                                    <Text style={styles.houseReview}>({place.reviewCount})</Text>
+                                </View>
+            
+                                <Text style={styles.reservationStateText}> {(place.clearReservation) ? ReservationText : NoReservationText }</Text>
+                            </View>
+                        </View>
+                        <TouchableOpacity onPress={() => this.changeFavoriteState(place.id)}>
+                            <Image style={styles.favoriteIcon} source={place.favoriteState ? checkFavoriteIconIMG : FavoriteIconIMG} />
+                        </TouchableOpacity>
                     </TouchableOpacity>
-                </TouchableOpacity>
-
-                <TouchableOpacity style={styles.content} onPress={() => this.props.navigation.navigate('숙소정보')} >
-                    <Image style={styles.houseIMG} source={houseIMG6}></Image>
-                    <View style={styles.houseInfo}>
-                        <Text style={styles.houseName}> ㅇㅇㅇ님의 거주지</Text>
-                        <Text style={styles.houseAddress}> 상세주소</Text>
-                        <Text style={styles.houseReview}> 평점(후기)</Text>
-                    </View>
-                    <TouchableOpacity style={styles.FavoriteView}>
-                      <View style={styles.IconLayout}>
-                        <Image 
-                            style={styles.FavoriteIcon} 
-                            source={FavoriteIconIMG}/>
-                      </View>
-                    </TouchableOpacity>
-                </TouchableOpacity>
-
-                <TouchableOpacity style={styles.content} onPress={() => this.props.navigation.navigate('숙소정보')} >
-                    <Image style={styles.houseIMG} source={houseIMG7}></Image>
-                    <View style={styles.houseInfo}>
-                        <Text style={styles.houseName}> ㅇㅇㅇ님의 거주지</Text>
-                        <Text style={styles.houseAddress}> 상세주소</Text>
-                        <Text style={styles.houseReview}> 평점(후기)</Text>
-                    </View>
-                    <TouchableOpacity style={styles.FavoriteView}>
-                      <View style={styles.IconLayout}>
-                        <Image 
-                            style={styles.FavoriteIcon} 
-                            source={FavoriteIconIMG}/>
-                      </View>
-                    </TouchableOpacity>
-                </TouchableOpacity>
-
-                <TouchableOpacity style={styles.content} onPress={() => this.props.navigation.navigate('숙소정보')} >
-                    <Image style={styles.houseIMG} source={houseIMG8}></Image>
-                    <View style={styles.houseInfo}>
-                        <Text style={styles.houseName}> ㅇㅇㅇ님의 거주지</Text>
-                        <Text style={styles.houseAddress}> 상세주소</Text>
-                        <Text style={styles.houseReview}> 평점(후기)</Text>
-                    </View>
-                    <TouchableOpacity style={styles.FavoriteView}>
-                      <View style={styles.IconLayout}>
-                        <Image 
-                            style={styles.FavoriteIcon} 
-                            source={FavoriteIconIMG}/>
-                      </View>
-                    </TouchableOpacity>
-                </TouchableOpacity>
-
-                <TouchableOpacity style={styles.content} onPress={() => this.props.navigation.navigate('숙소정보')} >
-                    <Image style={styles.houseIMG} source={houseIMG9}></Image>
-                    <View style={styles.houseInfo}>
-                        <Text style={styles.houseName}> ㅇㅇㅇ님의 거주지</Text>
-                        <Text style={styles.houseAddress}> 상세주소</Text>
-                        <Text style={styles.houseReview}> 평점(후기)</Text>
-                    </View>
-                    <TouchableOpacity style={styles.FavoriteView}>
-                      <View style={styles.IconLayout}>
-                        <Image 
-                            style={styles.FavoriteIcon} 
-                            source={FavoriteIconIMG}/>
-                      </View>
-                    </TouchableOpacity>
-                </TouchableOpacity>
-               
+                    ))}
+            
 
                 <View style={styles.barMargin}><Text> </Text></View>
             </View>
@@ -177,12 +152,12 @@ const styles = StyleSheet.create({
         marginTop: '5%',
         marginRight: '0.3%',
     },
-    reservationStateText: {         // 나의 예약 현황 텍스트  
+    myFavoriteListText: {           // 내가 찜한 숙소 텍스트  
         marginBottom: '0.5%',
         fontSize: 26,
         width: '88%',
     },  
-    content: {                      // 예약된 숙소 
+    content: {                      // 내가 찜한 숙소 컨텐츠들 
         width: 370,
         height: 120,
         alignItems: 'center',
@@ -202,74 +177,71 @@ const styles = StyleSheet.create({
     },
     Info: {                          // 숙소데이터 담는 View
         flex: 0,
-        width: '58%',
-        height: '100%',
-        marginBottom: '4%',
-    },
-    Name: {                          // 숙소명 텍스트
-        width:'100%',
-        textAlign: 'left',
-        fontSize: 18,
-        marginTop: '12%',
-        color:'black',
-    },
-    Address: {                 // 상세주소 텍스트
-        width:'100%',
-        textAlign: 'left',
-        fontSize: 10,
-        marginLeft: 5,
-    },
-    review: {                       // 별점 및 후기 텍스트
-        width:'100%',
-        textAlign: 'left',
-        fontSize: 10,
-        marginLeft: 5,
-        marginTop: 2,
-    },
-    reservationState: {             // '요청수락대기중'같은 예약 상태 표시 텍스트
-        width:'100%',
-        textAlign: 'left',
-        fontSize: 14,
-        marginLeft: 3,
-        marginTop: 8,
-    },
-    myFavoriteListText: {           // 내가 찜한 숙소 텍스트  
-        marginBottom: '0.5%',
-        marginTop: '5%',
-        fontSize: 26,
-        width: '88%',
-    },  
-    houseInfo: {                    // 찜한숙소 정보 View
-        flex: 0,
         width: '55%',
         height: '100%',
-    },      
-    houseName:{                     // 찜한숙소 이름                        
-        width:'100%',
+        // backgroundColor:'gray'
+    },
+    houseName: {                        // 숙소명 텍스트
+        width: 200,
         textAlign: 'left',
         fontSize: 20,
-        marginTop: '12%',
-        marginLeft: 2,
+        marginTop: '8.8%',
+        color:'#393939',
+        // backgroundColor: 'yellow',
     },
-    houseAddress: {                 // 찜한숙소 주소
-        width:'100%',
+    houseAddress: {                  // 찜한숙소 상세 주소
+        width: 200,
         textAlign: 'left',
         fontSize: 12,
-        marginLeft: 7,
-        marginTop: 2,
+        marginLeft: '2%',
+        marginTop: '1.1%',
+        color: '#777777',
+        // backgroundColor: 'yellow',
     },
-    houseReview: {                  // 찜한숙소 리뷰
-        width:'100%',
+    houseReviewView: {              // 평점 아이콘, 평점 텍스트 담는 View
+        flexDirection: 'row',
+        alignItems:'center',
+        marginTop: '1.1%',
+        // backgroundColor: 'gray',
+    },
+    houseReview: {                  // 찜한숙소 평점및 리뷰 갯수
         textAlign: 'left',
-        fontSize: 18,
-        marginLeft: 5,
-        marginTop: 4,
+        fontSize: 12,
+        marginLeft: '4.4%',
+        color: '#777777',
+        // backgroundColor: 'yellow',
     },
-    FavoriteIcon: {                 // 찜버튼 아이콘
-        width: 26,
-        height: 26,
+    reviewIcon:{                    // 리뷰 별 아이콘
+        marginLeft: '2.2%',
+        width: 11,
+        height: 11,
+        // backgroundColor: 'yellow',
+    },
+    housePrice:{                    // 숙소 가격
+        marginTop: '4.4%',
+        fontSize: 18,
+        marginLeft: '4.4%',
+        color: '#777777',
+        fontWeight: 'bold',
+    },
+    favoriteIcon: {                 // 찜버튼 아이콘
+        width: 24,
+        height: 24,
         resizeMode: 'cover',
     },
+
+    myReservationListText: {        // 나의 예약 현황 제목 텍스트
+        marginTop: '5.5%',
+        marginBottom: '2.2%',
+        fontSize: 26,
+        width: '88%',
+    },
+    reservationStateText: {         // 예약 요청중, 예약완료 텍스트
+        marginTop: '5.5%',
+        fontSize: 18,
+        color: '#AFAFAF',
+    },
+
 
     barMargin: {                    // 스크롤 여백
         height: 75,

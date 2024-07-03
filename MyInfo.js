@@ -8,6 +8,13 @@ import profileIMG from './Image/프로필_아이콘.png';
 import nextBtnIMG from './Image/Next버튼_아이콘.png';
 
 class MyInfoScreen extends Component {
+    
+    state={
+        name: '김갑순',
+        email: 'rkqtns61@gmail.com',
+        phoneNumber: '010-1234-5678',
+    }
+
   render() {
     return (
         <LinearGradient
@@ -29,9 +36,9 @@ class MyInfoScreen extends Component {
                         <Image style={styles.profileIMG} source={profileIMG}/>
                     </TouchableOpacity>
                     <View style={styles.infoText}>
-                        <Text style={styles.nameInfo}> 박양순님 </Text>
-                        <Text style={styles.detailInfo}> 성별, 나이 </Text>
-                        <Text style={styles.PhoneNumberInfo}> 연락처: 010-1122-3344 </Text>
+                        <Text style={styles.nameInfo}> {this.state.name} </Text>
+                        <Text style={styles.detailInfo}> {this.state.email} </Text>
+                        <Text style={styles.PhoneNumberInfo}> 연락처: {this.state.phoneNumber} </Text>
                     </View>
                     <TouchableOpacity onPress={() => this.props.navigation.navigate('내정보수정')}>
                         <Image style={styles.nextBtnIcon} source={nextBtnIMG}/>  

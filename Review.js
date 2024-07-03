@@ -45,7 +45,7 @@ class ReviewScreen extends Component {
                         <Image style={styles.profileIMG} source={profileIMG}/>
                         <View style={styles.profileInfoView}>
                             <Text style={styles.profileName}> 김철수 </Text>
-                            <Text style={styles.profileDetail}> 27세, 남성 </Text>
+                            {/* <Text style={styles.profileDetail}> 27세, 남성 </Text> */}
                         </View>
                         <View style={styles.reviewScoreView}>
                             <Image style={styles.reviewScore} source={reviewScoreIcon}/>
@@ -80,7 +80,7 @@ class ReviewScreen extends Component {
                         <Image style={styles.profileIMG} source={profileIMG}/>
                         <View style={styles.profileInfoView}>
                             <Text style={styles.profileName}> 이지수 </Text>
-                            <Text style={styles.profileDetail}> 24세, 여성 </Text>
+                            {/* <Text style={styles.profileDetail}> 24세, 여성 </Text> */}
                         </View>
                         <View style={styles.reviewScoreView}>
                             <Image style={styles.reviewScore} source={reviewScoreIcon}/>
@@ -263,8 +263,9 @@ const styles = StyleSheet.create({
         // backgroundColor: 'white',
     },
     profileName: {                        // 프로필 이름(김철수) 텍스트 
-        fontSize: 18,
-        marginLeft: '2%',
+        fontSize: 20,
+        marginLeft: '3.3%',
+        marginBottom: '2.2%',
         color: '#8D8D8D',
     },
     profileDetail: {                      // 프로필 세부 정보 (27세, 남성) 텍스트

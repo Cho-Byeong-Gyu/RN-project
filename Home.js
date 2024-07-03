@@ -13,16 +13,16 @@ import festivalIMG3 from './Image/축제3.png';
 
 class HomeScreen extends Component {
 
-  state = {
-    searchText: ''
-  }
+    state = {
+        searchText: ''
+    }
     
-  onChangeInput = (event)=>{
-    this.setState({
-        searchText: event ,
-        houseIMG: {houseIMG3},
-    })
-  }
+    onChangeInput = (event)=>{
+        this.setState({
+            searchText: event ,
+            houseIMG: {houseIMG3},
+        })
+    }
 
   render() {
     return (
@@ -31,7 +31,7 @@ class HomeScreen extends Component {
         style={styles.linearGradient} 
         start={{ x: 0, y: 0.8 }} 
         end={{ x: 0, y: 0}} >
-            <ScrollView style={styles.background} showsVerticalScrollIndicator={false}>
+            <ScrollView style={styles.background} showsVerticalScrollIndicator={false} animationType="slide">
             <View style={styles.container}>
                 <View style={styles.search}>
                     <Image style={styles.searchIcon} source={searchIconIMG}/>  

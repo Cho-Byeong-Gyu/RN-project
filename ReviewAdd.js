@@ -18,7 +18,7 @@ import houseIMG9 from './Image/여행지9.png';
 
 
 class ReviewAddScreen extends Component {
-    state = {
+    skmdka = {
         rating: 3 
     };
 
@@ -60,13 +60,13 @@ class ReviewAddScreen extends Component {
                          type='custom'
                          ratingCount={5}
                          imageSize={20}
-                         startingValue={this.state.rating}
+                         startingValue={this.skmdka.rating}
                          ratingColor={'#F4CD42'}      
                          fractions={2}             
                          onFinishRating={this.ratingCompleted}
                          style={styles.rating}
                          />
-                    <Text style={styles.ratingText}> {this.state.rating}점 </Text>
+                    <Text style={styles.ratingText}> {this.skmdka.rating}점 </Text>
                     </View>       
                 </View>
 
