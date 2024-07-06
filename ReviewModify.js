@@ -18,10 +18,53 @@ import houseIMG8 from './Image/여행지8.png';
 import houseIMG9 from './Image/여행지9.png';
 
 
-class ReviewAddScreen extends Component {
+class ReviewModifyScreen extends Component {
     state = {
         rating: 3, 
         reviewIMG: houseAddIMG,
+
+        reviews: [
+            {
+                id: 1,
+                profileName: '안철수',
+                reviewText: '강원도에서 귀농생각중이라 체험해볼겸 1박2일로 여행 갔다왔는데 정말 좋네요.\n\n 특히 어르신께서 오랜만에 오는 손님이라고 이것저것 엄청 챙겨주시고 65년 토박이라고 하시면서 주변 볼거리들도 추천해줬는데 강원도에 이렇게 자연경관이 아름다운 곳이 있었나 감탄만 하고 왔습니다... \n\n그리고 시골이라 쾌적한 숙소는 사실 기대안했는데 생각보다 내부는 엄청 깔끔해서 너무 잘 잤습니다. \n\n근데 확실히 시골이라 벌레가 많긴하더라구요 참고하시면 좋을 것 같아요.',
+                reviewScore: 4.3,
+                images: [houseIMG1],
+                optionsVisible: false,
+            },
+            {
+                id: 2,
+                profileName: '이지수',
+                reviewText: '확실히 강원도에 오래사신분이랑 스테이하니까 이것저것 새로 알게되는 것도 많네요. 어르신 덕분에 잘 쉬다갑니다!',
+                reviewScore: 4.7,
+                images: [houseIMG5, houseIMG6, houseIMG2,],
+                optionsVisible: false,
+            },
+            {
+                id: 3,
+                profileName: '박민철',
+                reviewText: '생각보다 내부가 깔끔했고, 어르신이 요리를 너무 잘하셔서 놀랬어요 자연즐기면서 쉬고싶은분들은 꼭 한번 가보십쇼',
+                reviewScore: 4.,
+                images: [],
+                optionsVisible: false,
+            },
+            {
+                id: 4,
+                profileName: '김지석',
+                reviewText: '숙소는 적당히 쉴만한데 가격이 너무 가성비라 여기서  시골스테이 한번 해보시는거 강추드립니다',
+                reviewScore: 4.4,
+                images: [ houseIMG3, houseIMG4,houseIMG9],
+                optionsVisible: false,
+            },
+            {
+                id: 5,
+                profileName: '오영수',
+                reviewText: '어르신이 너무 적극적으로 여행지나, 맛집등등 이것저것 알려주셔서 정말 편하게 여행도하고 시골생활도 즐기다 왔네요',
+                reviewScore: 4.7,
+                images: [],
+                optionsVisible: false,
+            },
+        ]
     };
 
     ratingCompleted = (rating) => {
@@ -29,8 +72,22 @@ class ReviewAddScreen extends Component {
         this.setState({ rating: roundedRating });
       };
 
-    changeInputText = (inputText) => {
-        this.setState({ reviewText: inputText });
+
+      constructor(props) {
+        super(props);
+        const reviewId = this.props.route.params.reviewId;
+        const reviewData = this.findReviewById(reviewId);
+        this.state = {
+            rating: reviewData.reviewScore,
+            reviewIMG: reviewData.images.length > 0 ? reviewData.images[0] : houseAddIMG, // 첫 번째 이미지 사용
+            reviewText: reviewData.reviewText,
+            reviewId: reviewId,
+        };
+    }
+    
+    findReviewById = (id) => {
+        const { reviews } = this.state;
+        return reviews.find(review => review.id === id);
     };
 
     addImage = () => {
@@ -54,6 +111,7 @@ class ReviewAddScreen extends Component {
             reviewText: event 
         })
     }
+    
 
   render() {
 
@@ -69,7 +127,7 @@ class ReviewAddScreen extends Component {
                     <TouchableOpacity  onPress={() => this.props.navigation.goBack()}>
                     <Image style={styles.backBtnIcon} source={backBtnIMG} />  
                     </TouchableOpacity>
-                    <Text style={styles.reviewWriteText}> 후기 작성하기 </Text>
+                    <Text style={styles.reviewWriteText}> 후기 수정하기 </Text>
                 </View>
 
                 <View style={styles.reviewScoreView}>
@@ -92,7 +150,7 @@ class ReviewAddScreen extends Component {
                 <View style={styles. reviewWriteView}>
                     <Text style={styles.ReviewText} > 아래에 후기를 남겨주세요. </Text>
                     <TouchableOpacity onPress={this.addImage}>
-                        <Text style={styles.addIMGText} >사진 추가</Text>
+                        <Text style={styles.addIMGText} >사진 변경</Text>
                     </TouchableOpacity>
                 </View>
 
@@ -102,18 +160,17 @@ class ReviewAddScreen extends Component {
                     </ScrollView>
                 </View>
 
-                <View style={styles.reviewTextInputView} >
-                    <TextInput style={styles.reviewTextInput} placeholder='내용을 입력해주세요..' multiline={true} onChangeText={this.onChangeInput}/>
+                <View style={styles.reviewTextInpuView} >
+                    <TextInput style={styles.reviewTextInput} value={this.state.reviewText} multiline={true} onChangeText={this.onChangeInput}/>
                 </View>
                 
                 <View style={styles.reservationBtnView}>
                 <TouchableOpacity style={styles.reservationBtn} onPress={() => this.props.navigation.goBack()}>
-                    <Text style={styles.reservationBtnText}> 후기 작성 완료</Text>
+                    <Text style={styles.reservationBtnText}> 후기 수정 완료</Text>
                 </TouchableOpacity>
                 </View>
       
                 <View style={styles.barMargin}><Text> </Text></View>
-                <View><Text> 여기다 가공한 데이터 출력하고싶어</Text></View>
             </View>
             </ScrollView>
 
@@ -260,7 +317,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         color: '#4285F4',
     },
-    reviewTextInputView:{                    // 후기 textinput 을 담은 View
+    reviewTextInpuView:{                    // 후기 textinput 을 담은 View
            marginTop: '12%',
            width: '84%',
            backgroundColor:'white',
@@ -311,25 +368,10 @@ const styles = StyleSheet.create({
     },
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     barMargin: {                    // 스클롤 탭바 마진
         height: 10,
     },
 
 });
 
-export default ReviewAddScreen;
+export default ReviewModifyScreen;

@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ImageBackground, Image, ScrollView } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 
 //이미지
 import backBtnIMG from './Image/뒤로가기_아이콘.png';
@@ -16,8 +17,24 @@ class MyInfoModifyScreen extends Component {
         email: 'rkqtns61@gmail.com',
         phoneNumber: '010-1234-5678',
         birthday: '1961년 7월 28일',
+        profile: profileIMG,
     }
 
+    addImage = () => {
+
+        launchImageLibrary({}, response => {
+                if (response.didCancel) {
+                    console.log('User cancelled image picker');
+                } else if (response.error) {
+                    console.log('ImagePicker Error: ', response.error);
+                } else if (response.customButton) {
+                    console.log('User tapped custom button: ', response.customButton);
+                } else {
+                    const source = { uri: response.assets[0].uri };
+                    this.setState({ profile: source });
+                }
+            });
+    };
 
   render() {
     return (
@@ -38,11 +55,11 @@ class MyInfoModifyScreen extends Component {
                 <View style={styles.myInfoCard}>     
                     <View style={styles.rowLayout}>
                         <TouchableOpacity style={styles.profileIMGView}>
-                            <Image style={styles.profileIMG} source={profileIMG}/>
+                            <Image style={styles.profileIMG} source={this.state.profile}/>
                         </TouchableOpacity>    
                         <View style={styles.columnLayout}>
                         <Text style={styles.nameInfo}> {this.state.name}</Text>
-                        <TouchableOpacity>
+                        <TouchableOpacity onPress={this.addImage}>
                             <Text style={styles.changeIMGText}> 프로필 사진 변경하기</Text>
                         </TouchableOpacity>
                         </View>

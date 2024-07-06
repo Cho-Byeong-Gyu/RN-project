@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ImageBackground, Image, } from 'react-native';
 
-
 // 이미지
 import BackgroundIMG from './Image/시골여행_배경사진.png';
 import GoogleLogoIMG from './Image/구글_로고.png';
@@ -12,7 +11,10 @@ import KakaoLogoIMG from './Image/카카오_로고.png';
 import Home from './Home';
 
 class LoginScreen extends Component {
+
+  
   render() {
+  
     return (
       <ImageBackground source={BackgroundIMG} style={styles.backgroundIMG}>
       <View style={styles.container}>
@@ -23,11 +25,11 @@ class LoginScreen extends Component {
         </View>
         <View style={styles.loginLayout}>
           <Text style={styles.loginText}> 로그인 </Text>
-          <TouchableOpacity style={styles.googleLogin} onPress={()=> alert('구글 로그인버튼')}>
+          <TouchableOpacity style={styles.googleLogin} onPress={()=> alert('APi 버전 호환성문제 고치는중')}>
               <Image source={GoogleLogoIMG} style={styles.googleLogo}/>
               <Text style={styles.googleText}> 구글 로그인 </Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.naverLogin}  onPress={()=> alert('네이버 로그인버튼')}>
+          <TouchableOpacity style={styles.naverLogin}  onPress={()=> alert('APi 버전 호환성문제 고치는중')}>
               <Image source={NaverLogoIMG} style={styles.naverLogo}/>
               <Text style={styles.naverText}> 네이버 로그인 </Text>
           </TouchableOpacity>
