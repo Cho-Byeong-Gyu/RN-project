@@ -1,5 +1,8 @@
 import React, {Component} from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ImageBackground, Image, } from 'react-native';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
+// import { login as NaverLogin}  from 'react-native-naver-login';
+// import KakaoLogins from '@react-native-seoul/kakao-login';
 
 // 이미지
 import BackgroundIMG from './Image/시골여행_배경사진.png';
@@ -7,10 +10,60 @@ import GoogleLogoIMG from './Image/구글_로고.png';
 import NaverLogoIMG from './Image/네이버_로고.png';
 import KakaoLogoIMG from './Image/카카오_로고.png';
 
-// 화면
-import Home from './Home';
+GoogleSignin.configure({
+  webClientId: '43982555838-e6qfufkkf8g2ihq99ph38mcv0atadmq9.apps.googleusercontent.com',
+  offlineAccess: true 
+});
 
 class LoginScreen extends Component {
+
+  googleLogin = async () => {
+    try {
+      await GoogleSignin.hasPlayServices();
+      const userInfo = await GoogleSignin.signIn();
+      console.log(userInfo); 
+      }catch (error) {
+        if (error.code === 'CANCELED') {
+          alert('User cancelled the login process');
+        } else if (error.code === 'SIGN_IN_FAILED') {
+          alert('Google sign-in failed');
+        } else {
+          alert('Something went wrong with sign-in: ' + error.toString());
+        }
+      }
+  };
+
+
+  // naverLogin = () => {
+  //   console.log('NaverLogin object:', NaverLogin); 
+  //   const naverCredentials = {
+  //     kConsumerKey: "YOUR_CONSUMER_KEY",
+  //     kConsumerSecret: "YOUR_CONSUMER_SECRET",
+  //     kServiceAppName: "YOUR_APP_NAME",
+  //   };
+  //   if (NaverLogin) {
+  //     NaverLogin.login(naverCredentials, (err, token) => {
+  //       console.log(err, token);
+  //     });
+  //   } else {
+  //     console.error('NaverLogin module is not properly initialized');
+  //   }
+  // };
+
+  // loginWithKakao = async () => {
+  //   try {
+  //     const result = await KakaoLogins.login();
+  //     console.log(result);
+  //   } catch (err) {
+  //     if (err.code === 'E_CANCELLED_OPERATION') {
+  //       console.warn('Login cancelled');
+  //     } else {
+  //       console.warn(err.message);
+  //     }
+  //   }
+  // };
+  
+  
 
   
   render() {
@@ -25,15 +78,15 @@ class LoginScreen extends Component {
         </View>
         <View style={styles.loginLayout}>
           <Text style={styles.loginText}> 로그인 </Text>
-          <TouchableOpacity style={styles.googleLogin} onPress={()=> alert('APi 버전 호환성문제 고치는중')}>
+          <TouchableOpacity style={styles.googleLogin} onPress={this.googleLogin}>
               <Image source={GoogleLogoIMG} style={styles.googleLogo}/>
               <Text style={styles.googleText}> 구글 로그인 </Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.naverLogin}  onPress={()=> alert('APi 버전 호환성문제 고치는중')}>
+          <TouchableOpacity style={styles.naverLogin} >
               <Image source={NaverLogoIMG} style={styles.naverLogo}/>
               <Text style={styles.naverText}> 네이버 로그인 </Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.kakaoLogin} onPress={() => this.props.navigation.navigate('메인')}>
+          <TouchableOpacity style={styles.kakaoLogin} >
               <Image source={KakaoLogoIMG} style={styles.kakaoLogo}/>
               <Text style={styles.kakaoText}> 카카오 로그인 </Text>
           </TouchableOpacity>
