@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image, TextInput, ScrollView} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
+import Hangul from 'hangul-js';
 
 //이미지
 import searchIconIMG from './Image/검색창_아이콘.png';
@@ -34,7 +35,7 @@ class HomeScreen extends Component {
         ],
     }
 
-    
+    속초
     onChangeInput = (event)=>{
         const trimmedText = event.replace(/\s+$/, '');
         this.setState({

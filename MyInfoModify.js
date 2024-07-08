@@ -2,6 +2,9 @@ import React, {Component} from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ImageBackground, Image, ScrollView } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import axios from 'axios';
+import { getToken, refreshAccessToken } from './token';
+
 
 //이미지
 import backBtnIMG from './Image/뒤로가기_아이콘.png';
@@ -9,18 +12,61 @@ import profileIMG from './Image/프로필_아이콘.png';
 import nextBtnIMG from './Image/Next버튼_아이콘.png';
 
 class MyInfoModifyScreen extends Component {
-
+    
     state={
-        name: '김갑순',
-        gender: '여자',
-        age: '64세',
-        email: 'rkqtns61@gmail.com',
-        phoneNumber: '010-1234-5678',
-        birthday: '1961년 7월 28일',
+        name: '',
+        email: '',
+        phoneNum: '',
         profile: profileIMG,
+        // age: '64세',
+        // gender: '여자',
+        // birthday: '1961년 7월 28일',
     }
 
-    addImage = () => {
+    componentDidMount() {                          // 페이지 로딩시 유저정보 불러오는 함수
+        this.getUserInfoData();
+    }
+
+
+
+    async getUserInfoData() {                      // axios를 활용한 api통신을 통해 서버로부터 유저 데이터를 불러오는 함수
+        try{
+            const token = await getToken();
+            
+            const response = await axios.get('http://223.130.131.166:8080/api/v1/user',{
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            if (response.data) {
+                const { name, email, phoneNum } = response.data;
+                this.setState({ name, email, phoneNum });
+                console.log(`Name: ${name}, Email: ${email}, PhoneNum: ${phoneNum}`);
+            }
+
+        }catch (error) {
+            if (error.response && error.response.status === 401) {              // 토큰 재발급 예외처리 후 다시 실행
+                try {
+                  const newToken = await refreshAccessToken();
+                  const response = await axios.get('http://223.130.131.166:8080/api/v1/user', {
+                    headers: {
+                      'Authorization': `Bearer ${newToken}`
+                    }
+                  });
+                  console.log('서버로부터 받은 데이터:', response.data);
+                  return response.data;
+                } catch (refreshError) {
+                  console.error('토큰 갱신 및 데이터 불러오기 실패:', refreshError);
+                }
+              } else {
+                console.error('데이터 불러오기 실패:', error);
+              }
+        }
+    }
+
+
+    modifyImage = () => {                  // 이미지 수정하는 함수
 
         launchImageLibrary({}, response => {
                 if (response.didCancel) {
@@ -59,7 +105,7 @@ class MyInfoModifyScreen extends Component {
                         </TouchableOpacity>    
                         <View style={styles.columnLayout}>
                         <Text style={styles.nameInfo}> {this.state.name}</Text>
-                        <TouchableOpacity onPress={this.addImage}>
+                        <TouchableOpacity onPress={this.modifyImage}>
                             <Text style={styles.changeIMGText}> 프로필 사진 변경하기</Text>
                         </TouchableOpacity>
                         </View>
@@ -88,7 +134,7 @@ class MyInfoModifyScreen extends Component {
         */}
                         <View style={styles.infoRowLayout}>
                             <Text style={styles.infoText}>연락처</Text>
-                            <Text style={styles.infoInputText}> {this.state.phoneNumber} </Text>
+                            <Text style={styles.infoInputText}> {this.state.phoneNum} </Text>
                         </View>
        
                         {/* <View style={styles.infoRowLayout}>

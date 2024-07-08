@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ImageBackground, Image, ScrollView } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
+import axios from 'axios';
+import { getToken, refreshAccessToken } from './token';
 
 //이미지
 import backBtnIMG from './Image/뒤로가기_아이콘.png';
@@ -10,10 +12,56 @@ import nextBtnIMG from './Image/Next버튼_아이콘.png';
 class MyInfoScreen extends Component {
     
     state={
-        name: '김갑순',
-        email: 'rkqtns61@gmail.com',
-        phoneNumber: '010-1234-5678',
+        name: '',
+        email: '',
+        phoneNum: '',
     }
+
+    componentDidMount() {                          // 페이지 로딩시 유저정보 불러오는 함수
+        this.getUserInfoData();
+    }
+
+
+    async getUserInfoData() {                      // axios를 활용한 api통신을 통해 서버로부터 유저 데이터를 불러오는 함수
+        try{
+            const token = await getToken();
+            
+            const response = await axios.get('http://223.130.131.166:8080/api/v1/user',{
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            if (response.data) {
+                const { name, email, phoneNum } = response.data;
+                this.setState({ name, email, phoneNum });
+                console.log(`Name: ${name}, Email: ${email}, PhoneNum: ${phoneNum}`);
+            }
+
+        }catch (error) {
+            if (error.response && error.response.status === 401) {              // 토큰 재발급 예외처리 후 다시 실행
+                try {
+                  const newToken = await refreshAccessToken();
+                  const response = await axios.get('http://223.130.131.166:8080/api/v1/user', {
+                    headers: {
+                      'Authorization': `Bearer ${newToken}`
+                    }
+                  });
+                  console.log('서버로부터 받은 데이터:', response.data);
+                  return response.data;
+                } catch (refreshError) {
+                  console.error('토큰 갱신 및 데이터 불러오기 실패:', refreshError);
+                }
+              } else {
+                console.error('데이터 불러오기 실패:', error);
+              }
+        }
+    }
+
+
+
+
+
 
   render() {
     return (
@@ -38,7 +86,7 @@ class MyInfoScreen extends Component {
                     <View style={styles.infoText}>
                         <Text style={styles.nameInfo}> {this.state.name} </Text>
                         <Text style={styles.detailInfo}> {this.state.email} </Text>
-                        <Text style={styles.PhoneNumberInfo}> 연락처: {this.state.phoneNumber} </Text>
+                        <Text style={styles.PhoneNumberInfo}> 연락처: {this.state.phoneNum} </Text>
                     </View>
                     <TouchableOpacity onPress={() => this.props.navigation.navigate('내정보수정')}>
                         <Image style={styles.nextBtnIcon} source={nextBtnIMG}/>  

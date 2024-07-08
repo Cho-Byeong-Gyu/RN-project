@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import { Text, Image, } from 'react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -89,6 +90,7 @@ MainScreen = () => {
 class App extends Component {
     render() {
         return(
+            <SafeAreaProvider>
             <NavigationContainer>
                 <Stack.Navigator initialRouteName='로그인'  screenOptions={{headerShown: false}}>
                     <Stack.Screen name="메인" component={MainScreen}/>
@@ -105,6 +107,7 @@ class App extends Component {
                     <Stack.Screen name="축제정보" component={FestivalInfoScreen} />
                 </Stack.Navigator>
             </NavigationContainer>
+            </SafeAreaProvider>
     )
   }
 };

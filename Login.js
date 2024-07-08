@@ -1,8 +1,9 @@
 import React, {Component} from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ImageBackground, Image, } from 'react-native';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
-// import { login as NaverLogin}  from 'react-native-naver-login';
-// import KakaoLogins from '@react-native-seoul/kakao-login';
+import axios from 'axios';
+import { setToken } from './token';
+
 
 // 이미지
 import BackgroundIMG from './Image/시골여행_배경사진.png';
@@ -11,18 +12,44 @@ import NaverLogoIMG from './Image/네이버_로고.png';
 import KakaoLogoIMG from './Image/카카오_로고.png';
 
 GoogleSignin.configure({
-  webClientId: '43982555838-e6qfufkkf8g2ihq99ph38mcv0atadmq9.apps.googleusercontent.com',
+  webClientId: '412626397279-f3etaihguig05f60qdp84cpkk7oq5uhm.apps.googleusercontent.com',
+  androidClientId: '412626397279-f3etaihguig05f60qdp84cpkk7oq5uhm.apps.googleusercontent.com',
   offlineAccess: true 
 });
 
 class LoginScreen extends Component {
+  
+  async postLoginData() {                              // axios로 서버에 로그인 data를 post하는 함수
+    try {
+      const response = await axios.post('http://223.130.131.166:8080/api/v1/auth/login', {
+          email: "dmdkdkr@naver.com",
+          socialId: "dmdkdkr",
+          socialType: "KAKAO",
+          name: "으아악",
+          nickname: "으아악",
+          birthYear: "1999",
+          birthDay: "0311",
+          phoneNum: "010-0000-0000",
+      });
+      console.log('제대로 보내졌나:', response.data);  
 
-  googleLogin = async () => {
+      const { accessToken, refreshToken } = response.data;
+      await setToken(accessToken, refreshToken);
+
+      this.props.navigation.navigate('메인');
+    } catch (error) {
+      console.error('응답실패:', error.response ? error.response.data : error.message);  
+    }
+  }
+
+
+
+  googleLogin = async () => {                                   // 구글 로그인 api 연동 코드
     try {
       await GoogleSignin.hasPlayServices();
       const userInfo = await GoogleSignin.signIn();
       console.log(userInfo); 
-      }catch (error) {
+    }catch (error) {
         if (error.code === 'CANCELED') {
           alert('User cancelled the login process');
         } else if (error.code === 'SIGN_IN_FAILED') {
@@ -31,40 +58,7 @@ class LoginScreen extends Component {
           alert('Something went wrong with sign-in: ' + error.toString());
         }
       }
-  };
-
-
-  // naverLogin = () => {
-  //   console.log('NaverLogin object:', NaverLogin); 
-  //   const naverCredentials = {
-  //     kConsumerKey: "YOUR_CONSUMER_KEY",
-  //     kConsumerSecret: "YOUR_CONSUMER_SECRET",
-  //     kServiceAppName: "YOUR_APP_NAME",
-  //   };
-  //   if (NaverLogin) {
-  //     NaverLogin.login(naverCredentials, (err, token) => {
-  //       console.log(err, token);
-  //     });
-  //   } else {
-  //     console.error('NaverLogin module is not properly initialized');
-  //   }
-  // };
-
-  // loginWithKakao = async () => {
-  //   try {
-  //     const result = await KakaoLogins.login();
-  //     console.log(result);
-  //   } catch (err) {
-  //     if (err.code === 'E_CANCELLED_OPERATION') {
-  //       console.warn('Login cancelled');
-  //     } else {
-  //       console.warn(err.message);
-  //     }
-  //   }
-  // };
-  
-  
-
+    };
   
   render() {
   
@@ -78,16 +72,16 @@ class LoginScreen extends Component {
         </View>
         <View style={styles.loginLayout}>
           <Text style={styles.loginText}> 로그인 </Text>
-          <TouchableOpacity style={styles.googleLogin} onPress={this.googleLogin}>
+          <TouchableOpacity style={styles.googleLogin} onPress={() => this.googleLogin()}>
               <Image source={GoogleLogoIMG} style={styles.googleLogo}/>
               <Text style={styles.googleText}> 구글 로그인 </Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.naverLogin} >
+          <TouchableOpacity style={styles.naverLogin}  onPress={() => this.postLoginData()} >
               <Image source={NaverLogoIMG} style={styles.naverLogo}/>
               <Text style={styles.naverText}> 네이버 로그인 </Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.kakaoLogin} >
-              <Image source={KakaoLogoIMG} style={styles.kakaoLogo}/>
+          <TouchableOpacity style={styles.kakaoLogin}  onPress={() => this.postLoginData()} >
+              <Image source={KakaoLogoIMG} style={styles.kakaoLogo} />
               <Text style={styles.kakaoText}> 카카오 로그인 </Text>
           </TouchableOpacity>
         </View>

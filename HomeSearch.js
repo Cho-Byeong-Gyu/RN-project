@@ -78,6 +78,7 @@ class HomeSearchScreen extends Component {
                                 style={styles.input} 
                                 placeholder='시골여행 / 농촌체험' 
                                 placeholderTextColor="#979797"
+                                editable={false}
                                 value={searchText}/>
                         </View>
 

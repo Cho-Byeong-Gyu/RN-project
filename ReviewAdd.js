@@ -113,7 +113,6 @@ class ReviewAddScreen extends Component {
                 </View>
       
                 <View style={styles.barMargin}><Text> </Text></View>
-                <View><Text> 여기다 가공한 데이터 출력하고싶어</Text></View>
             </View>
             </ScrollView>
 
