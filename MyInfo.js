@@ -34,7 +34,11 @@ class MyInfoScreen extends Component {
 
             if (response.data) {
                 const { name, email, phoneNum } = response.data;
-                this.setState({ name, email, phoneNum });
+                this.setState({
+                     name: name, 
+                     email: email,
+                     phoneNum : phoneNum, 
+                    });
                 console.log(`Name: ${name}, Email: ${email}, PhoneNum: ${phoneNum}`);
             }
 

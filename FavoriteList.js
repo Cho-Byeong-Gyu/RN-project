@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ImageBackground, Image, ScrollView} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
+import axios from 'axios';
+import {getToken, refreshToken} from './token'
 
 //이미지
 import backBtnIMG from './Image/뒤로가기_아이콘.png';
@@ -16,6 +18,8 @@ import houseIMG6 from './Image/여행지6.png';
 import houseIMG7 from './Image/여행지7.png';
 import houseIMG8 from './Image/여행지8.png';
 import houseIMG9 from './Image/여행지9.png';
+
+
 
 class FavoriteListScreen extends Component {
 
@@ -38,6 +42,65 @@ class FavoriteListScreen extends Component {
             { id: 16, name: "이미연님의 거주지", address:'충천남도 당진시 순성면', reviewScore: "4.6", reviewCount: 20, imageUrl: require('./Image/여행지15.png'), favoriteState: false, price: 54000, reservaionState: false,  clearReservation: false },
         ],
     };
+
+
+    
+    async getFavoriteData()  {                          // 즐겨찾기, 나의 예약현황 데이터 axios를 활용한 api 통신을 통해 서버로 부터 불러오기
+        try {
+            const token = await getToken();
+    
+            const response = await axios.get('http://223.130.131.166:8080/api/v1/임시 url',{
+                headers: { 'Authorization': `Bearer ${token}`}
+            })
+    
+            if(response.data) {
+                const { id, name, address, reviewScore, reviewCount, imageUrl, favoriteState, price, reservaionState } = response.data;
+
+                this.setState({
+                  id: id, 
+                  name: name,
+                  address : address, 
+                  reviewScore : reviewScore,
+                  reviewCount : reviewCount,
+                  imageUrl : imageUrl,
+                  favoriteState : favoriteState,
+                  price : price,
+                  reservaionState: reservaionState,
+              });
+            }
+        } catch(error) {
+            if (error.response && error.response.status === 401) {              // 토큰 재발급 예외처리 후 다시 실행
+                try {
+                  const newToken = await refreshAccessToken();
+                  const response = await axios.get('http://223.130.131.166:8080/api/v1/임시 rul', {
+                    headers: {
+                      'Authorization': `Bearer ${newToken}`
+                    }
+                  });
+                  const { id, name, address, reviewScore, reviewCount, imageUrl, favoriteState, price, reservaionState } = response.data;
+
+                  this.setState({
+                    id: id, 
+                    name: name,
+                    address : address, 
+                    reviewScore : reviewScore,
+                    reviewCount : reviewCount,
+                    imageUrl : imageUrl,
+                    favoriteState : favoriteState,
+                    price : price,
+                    reservaionState: reservaionState,
+                });
+
+                  console.log('서버로부터 받은 데이터:', response.data);
+                  return response.data;
+                } catch (refreshError) {
+                  console.error('토큰 갱신 및 데이터 불러오기 실패:', refreshError);
+                }
+              } else {
+                console.error('데이터 불러오기 실패:', error);
+              }
+        }
+    }
 
     changeFavoriteState = (id) => {                 // 찜버튼 누르면 FavoriteState 상태 바꿔주는 함수
         const PlacesState = this.state.places.map(place => {

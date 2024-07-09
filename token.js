@@ -4,8 +4,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const setToken = async (accessToken, refreshToken) => {       // 토큰 AsyncStorage 라이브러리에 저장하는 함수
     try {
-      await AsyncStorage.setItem('userToken', accessToken);          // AsyncStorage의 setItem함수를 통해 userToken변수에 토큰값 저장
-      await AsyncStorage.setItem('refreshToken', refreshToken);         // AsyncStorage의 setItem함수를 통해 userToken변수에 토큰값 저장
+      await AsyncStorage.setItem('userToken', accessToken);          
+      await AsyncStorage.setItem('refreshToken', refreshToken);        
     } catch (error) {
       console.error('토큰 저장 실패:', error);
     }

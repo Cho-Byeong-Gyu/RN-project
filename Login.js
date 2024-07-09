@@ -11,7 +11,7 @@ import GoogleLogoIMG from './Image/구글_로고.png';
 import NaverLogoIMG from './Image/네이버_로고.png';
 import KakaoLogoIMG from './Image/카카오_로고.png';
 
-GoogleSignin.configure({
+GoogleSignin.configure({                                        // 구글 api confing
   webClientId: '412626397279-f3etaihguig05f60qdp84cpkk7oq5uhm.apps.googleusercontent.com',
   androidClientId: '412626397279-f3etaihguig05f60qdp84cpkk7oq5uhm.apps.googleusercontent.com',
   offlineAccess: true 
@@ -22,14 +22,14 @@ class LoginScreen extends Component {
   async postLoginData() {                              // axios로 서버에 로그인 data를 post하는 함수
     try {
       const response = await axios.post('http://223.130.131.166:8080/api/v1/auth/login', {
-          email: "dmdkdkr@naver.com",
-          socialId: "dmdkdkr",
+          email: "leejunho61@naver.com",
+          socialId: "이준호",
           socialType: "KAKAO",
-          name: "으아악",
-          nickname: "으아악",
-          birthYear: "1999",
-          birthDay: "0311",
-          phoneNum: "010-0000-0000",
+          name: "이준호",
+          nickname: "이준호",
+          birthYear: "1961",
+          birthDay: "0712",
+          phoneNum: "010-1234-5678",
       });
       console.log('제대로 보내졌나:', response.data);  
 
