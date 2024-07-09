@@ -2,6 +2,9 @@ import React, {Component, useState} from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image, ScrollView, TextInput } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { getToken } from './token'
 
 //이미지
 import backBtnIMG from './Image/뒤로가기_아이콘.png';
@@ -20,13 +23,14 @@ import houseIMG9 from './Image/여행지9.png';
 class HouseAddScreen extends Component {
     state = {
         hostName: '', 
-        phoneNumber: '',
-        maximumGuestNumber: '',
-        streetAddress: '',
-        price: '',
-        freeService: '',
         introText: '',
+        freeService: '',
+        houseIMG: houseAddIMG,
         address: '',
+        phoneNumber: '',
+        price: 0,
+        maximumGuestNumber: '아직 전달 못 받음',
+        streetAddress: '아직 전달 못 받음',
         editHostNameState: false,
         editPhoneNumberState: false,
         editStreetAddressState: false,
@@ -34,8 +38,8 @@ class HouseAddScreen extends Component {
         editPriceState: false,
         editFreeServiceState: false,
         editIntroTextState: false,
-        houseIMG: houseAddIMG,
       };
+
     
     changeHostName = (inputText) => {
         this.setState({ hostName: inputText });
@@ -87,12 +91,51 @@ class HouseAddScreen extends Component {
     };
 
 
-    // addImage = () => {
-    //     launchImageLibrary({}, response=>{
-    //         const source = { uri: response.uri }
-    //         this.setState({ houseIMG: source })
-    //     });
-    // }
+
+    async postHouseData()  {                          // 모든 숙소 정보 리스트 데이터 axios를 활용한 api 통신을 통해 서버로 부터 불러오기
+        try {
+            const {
+                hostName,     
+                introText,
+                phoneNumber,
+                freeService,
+                price,
+                address,
+            } = this.state;
+            
+            const data = {
+                hostName: hostName,  
+                houseIntroduction: introText,
+                freeService : freeService,
+                facilityPhotos: [houseIMG1],  
+                address: address,
+                phoneNumber: phoneNumber,   
+                pricePerNight: price,
+                registrantId: 1,
+            };
+
+            const token = await getToken();
+            
+            const response = await axios.post('http://223.130.131.166:8080/api/v1/house', data ,{
+                headers: { 'Authorization': `Bearer ${token}`}
+            })
+            
+            console.log(response.data);
+            this.props.navigation.navigate('숙소등록');
+
+        } catch(error) {
+            if (error.response) {
+              console.log('Error status:', error.response.status);
+              console.log('Error data:', error.response.data);
+              console.log('Error headers:', error.response.headers);
+            } else if (error.request) {
+              console.log('No response received:', error.request);
+            } else {
+              console.log('Error message:', error.message);
+            }
+            console.log('Error config:', error.config);
+          }
+    }
 
     addImage = () => {
 
@@ -109,6 +152,8 @@ class HouseAddScreen extends Component {
                 }
             });
     };
+
+
     
 render() {
 
@@ -251,7 +296,7 @@ render() {
                     <Text style={styles.ruleAlertText}> ※위 규칙을 3회이상 어길 시, 호스트에게 숙박비의 30%에 해당하는 벌금이 발생할 수 있습니다. </Text>
                 </View>
 
-                <TouchableOpacity style={styles.reservationBtn} onPress={() => this.props.navigation.goBack()}>
+                <TouchableOpacity style={styles.reservationBtn} onPress={() => this.postHouseData()}>
                     <Text style={styles.reservationBtnText}> 숙소 등록하기</Text>
                 </TouchableOpacity>
 

@@ -25,31 +25,25 @@ class FavoriteListScreen extends Component {
 
     state = {
         places: [                                   // 목록에 띄울 데이터들 관
-            { id: 1, name: "김갑순님의 거주지", address:'강원도 속초시 신림면', reviewScore: "4.2", reviewCount: 48, imageUrl: require('./Image/여행지1.png'), favoriteState: true, price: 43000, reservaionState: false, clearReservation: false },
-            { id: 2, name: "김경민님의 거주지", address:'강원도 원주시 신림면', reviewScore: "3.8", reviewCount: 23, imageUrl: require('./Image/여행지2.png'), favoriteState: true, price: 38000, reservaionState: false,  clearReservation: false },
-            { id: 3, name: "강진석님의 거주지", address:'강원도 철원군 동송읍', reviewScore: "4.0", reviewCount: 31, imageUrl: require('./Image/여행지3.png'), favoriteState: false, price: 88000, reservaionState: false,  clearReservation: false },
-            { id: 4, name: "오진태님의 거주지", address:'강원도 강릉시 옥계면',reviewScore: "4.4", reviewCount: 18, imageUrl: require('./Image/여행지4.png'), favoriteState: false, price: 26000, reservaionState: false,  clearReservation: false },
-            { id: 5, name: "박경숙님의 거주지", address: '경상남도 부산광역시 김해시 진영읍', reviewScore: "4.2", reviewCount: 66, imageUrl: require('./Image/여행지5.png'), favoriteState: false, price: 40000, reservaionState: false,  clearReservation: false },
-            { id: 7, name: "이창민님의 거주지", address:'경상남도 부산광역시 금정구 구서2동',reviewScore: "4.6", reviewCount: 20, imageUrl: require('./Image/여행지6.png'), favoriteState: false, price: 54000, reservaionState: false,  clearReservation: false },
-            { id: 9, name: "오경숙님의 거주지", address:'경상북도 울산광역시 울주군 둔기리', reviewScore: "4.6", reviewCount: 20, imageUrl: require('./Image/여행지8.png'), favoriteState: false, price: 54000, reservaionState: false,  clearReservation: false },
-            { id: 8, name: "양민우님의 거주지", address:'전라남도 전주시 덕진구', reviewScore: "4.6", reviewCount: 20, imageUrl: require('./Image/여행지7.png'), favoriteState: true, price: 54000, reservaionState: false,  clearReservation: false },
-            { id: 10, name: "이정민님의 거주지", address:'경기도 화성시 남양읍', reviewScore: "4.6", reviewCount: 20, imageUrl: require('./Image/여행지9.png'), favoriteState: false, price: 54000, reservaionState: false,  clearReservation: false },
-            { id: 11, name: "박범석님의 거주지", address:'제주특별자치도 서귀포시 남원읍', reviewScore: "4.6", reviewCount: 20, imageUrl: require('./Image/여행지10.png'), favoriteState: false, price: 54000, reservaionState: false,  clearReservation: false },
-            { id: 12, name: "황진영님의 거주지", address:'전라남도 광주광역시 북구 오치1동', reviewScore: "4.6", reviewCount: 20, imageUrl: require('./Image/여행지11.png'), favoriteState: false, price: 54000, reservaionState: false,  clearReservation: false },
-            { id: 13, name: "박우석님의 거주지", address:'전라남도 나주시 영강동', reviewScore: "4.6", reviewCount: 20, imageUrl: require('./Image/여행지12.png'), favoriteState: false, price: 54000, reservaionState: false,  clearReservation: false },
-            { id: 14, name: "이현숙님의 거주지", address:'충천남도 공주시 우성면', reviewScore: "4.6", reviewCount: 20, imageUrl: require('./Image/여행지13.png'), favoriteState: false, price: 54000, reservaionState: true,  clearReservation: true },
-            { id: 15, name: "황지석님의 거주지", address:'충천남도 아산시 신창면 남성리', reviewScore: "4.6", reviewCount: 20, imageUrl: require('./Image/여행지14.png'), favoriteState: false, price: 54000, reservaionState: false,  clearReservation: false },
-            { id: 16, name: "이미연님의 거주지", address:'충천남도 당진시 순성면', reviewScore: "4.6", reviewCount: 20, imageUrl: require('./Image/여행지15.png'), favoriteState: false, price: 54000, reservaionState: false,  clearReservation: false },
+            { id: 1, 
+                name: "김갑순님의 거주지",
+                address:'강원도 속초시 신림면', 
+                reviewScore: "4.2", 
+                reviewCount: 48, 
+                imageUrl: require('./Image/여행지1.png'), 
+                favoriteState: true, 
+                price: 43000, 
+                reservaionState: false, 
+                clearReservation: false },
         ],
     };
-
 
     
     async getFavoriteData()  {                          // 즐겨찾기, 나의 예약현황 데이터 axios를 활용한 api 통신을 통해 서버로 부터 불러오기
         try {
             const token = await getToken();
     
-            const response = await axios.get('http://223.130.131.166:8080/api/v1/임시 url',{
+            const response = await axios.get('http://223.130.131.166:8080/api/v1//api/v1/house/list/user',{
                 headers: { 'Authorization': `Bearer ${token}`}
             })
     
@@ -69,36 +63,7 @@ class FavoriteListScreen extends Component {
               });
             }
         } catch(error) {
-            if (error.response && error.response.status === 401) {              // 토큰 재발급 예외처리 후 다시 실행
-                try {
-                  const newToken = await refreshAccessToken();
-                  const response = await axios.get('http://223.130.131.166:8080/api/v1/임시 rul', {
-                    headers: {
-                      'Authorization': `Bearer ${newToken}`
-                    }
-                  });
-                  const { id, name, address, reviewScore, reviewCount, imageUrl, favoriteState, price, reservaionState } = response.data;
-
-                  this.setState({
-                    id: id, 
-                    name: name,
-                    address : address, 
-                    reviewScore : reviewScore,
-                    reviewCount : reviewCount,
-                    imageUrl : imageUrl,
-                    favoriteState : favoriteState,
-                    price : price,
-                    reservaionState: reservaionState,
-                });
-
-                  console.log('서버로부터 받은 데이터:', response.data);
-                  return response.data;
-                } catch (refreshError) {
-                  console.error('토큰 갱신 및 데이터 불러오기 실패:', refreshError);
-                }
-              } else {
-                console.error('데이터 불러오기 실패:', error);
-              }
+            // if (error.response && error.response.status === 401) {              // 토큰 재발급 예외처리 후 다시 실행
         }
     }
 
