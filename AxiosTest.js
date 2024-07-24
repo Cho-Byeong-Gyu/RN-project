@@ -1,10 +1,9 @@
 import React, {Component, useState} from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image, ScrollView, TextInput, Platform } from 'react-native';
-import LinearGradient from 'react-native-linear-gradient';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import axios from 'axios';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { getToken } from './token'
+import { getToken, refreshAccessToken } from './token'
+import RNFS from 'react-native-fs';
 import RNFetchBlob from 'react-native-blob-util';
 
 class AxiosTest extends Component {
@@ -21,12 +20,10 @@ class AxiosTest extends Component {
         imageType: null, 
         imageName: null,
     }
-
-   
-async postHouseData() {
-    try {
-        const {
-            hostName,     
+    async postHouseData() {
+        try {
+          const {
+            hostName,
             introText,
             phoneNumber,
             freeService,
@@ -36,72 +33,77 @@ async postHouseData() {
             imageUri,
             imageType,
             imageName,
-        } = this.state;
-
-        const formData = new FormData();
-
-        const dto = { 
-            hostName: hostName,
+          } = this.state;
+    
+          const formData = new FormData();
+    
+          const dto = {
+            hostName,
             houseIntroduction: introText,
-            freeService: freeService,
-            phoneNumber: phoneNumber,
+            freeService,
+            phoneNumber,
             registrantId: 1,
             pricePerNight: Number(price.replace(/\D/g, '')),
-            address: address,
+            address,
             maxNumPeople: Number(maximumGuestNumber.replace(/\D/g, '')),
-        };
-
-        const jsonString = JSON.stringify(dto);
-        const blob = await RNFetchBlob.polyfill.Blob.build(jsonString, { type: 'application/json;' });
-        console.log("Blob 생성 테스트: ", blob);
-        formData.append("dto", blob, 'dto.json');
-
-        // Append images as files to the formData
-        this.state.imageUri.forEach((filePath, index) => {
+          };
+    
+          formData.append('dto', JSON.stringify(dto));
+    
+          imageUri.forEach((filePath, index) => {
             formData.append('photos', {
-                uri: `file://${filePath}`,
-                type: this.state.imageType || 'image/jpeg',
-                name: this.state.imageName || `image_${index}.jpg`,
+                uri: filePath,
+                name: imageName || `image_${index}.jpg`,
+                type: imageType
             });
-        });
+          });
+    
+          for (let pair of formData._parts) {
+            console.log(pair[0] + ': ' + JSON.stringify(pair[1]));
+          }
 
-        const token = await getToken(); 
-
-        const response = await axios({
-            method: "POST",
-            url: "http://223.130.131.166:8080/api/v1/house",
-            data: formData,
-            headers: {
+          const token = await getToken();
+    
+          const response = await axios.post(
+            'http://223.130.131.166:8080/api/v1/house',
+            formData,
+            {
+              headers: {
                 'Authorization': `Bearer ${token}`,
-                'Content-Type': 'multipart/form-data', 
-            },
-        });
-
-        console.log(response.data);
-        this.props.navigation.navigate('검색', { refresh: true });
-    } catch(error) {
-        console.log('숙소 데이터 보내는 도중 에러발생:', error);
-        if (error.response) {
+                'Content-Type': 'multipart/form-data; boundary="boundary"',
+              },
+              transformRequest: (data, headers) => {
+                return data;
+              },
+            }
+          );
+    
+          console.log(response.data);
+          this.props.navigation.navigate('검색', { refresh: true });
+        } catch (error) {
+          console.log('숙소 데이터 보내는 도중 에러발생:', error);
+          if (error.response) {
             console.log('Error status:', error.response.status);
             console.log('Error data:', error.response.data);
             console.log('Error headers:', error.response.headers);
-        } else if (error.request) {
+          } else if (error.request) {
             console.log('Request that triggered error:', error.request);
-        } else {
+          } else {
             console.log('Error message:', error.message);
+          }
         }
-    }
-}
+      }
+    
 //////////////////////////////////////////////////////////////   
 
 
     addImage = () => {
         const options = {
             mediaType: 'photo',
-            quality: 1, // 이미지 품질을 50%로 설정
-            maxWidth: 300, // 최대 너비를 800픽셀로 제한
-            maxHeight: 300, // 최대 높이를 800픽셀로 제한
-            includeBase64: false, // Base64 인코딩된 이미지 데이터 포함 여부
+            quality: 1, 
+            maxWidth: 300, 
+            maxHeight: 300, 
+            includeBase64: false, 
         }
         launchImageLibrary(options, response => {
                 if (response.didCancel) {
@@ -113,16 +115,20 @@ async postHouseData() {
                 } else {
 
                     const { uri, type, fileName } = response.assets[0];
+                    const newFilePath = `${RNFS.TemporaryDirectoryPath}/${fileName}`;
                     console.log(`Uri: ${uri}\ \n Type: ${type} \n Name: ${fileName}`);
-                    this.setState(prevState => ({
-                        imageUri: [...prevState.imageUri, uri],
-                        imageType: type,
-                        imageName: fileName,
-                    })), () => {
-                        console.log(`Uri: ${this.state.imageUri}, Type: ${this.state.imageType}, Name: ${this.state.imageName}`);
-                    };
-                    
-                }
+
+                    RNFS.copyFile(uri, newFilePath)
+                    .then(() => {
+                      this.setState(prevState => ({
+                          imageUri: [...prevState.imageUri, newFilePath], 
+                          imageType: type,
+                          imageName: fileName,
+                      }));
+                    })
+                    .catch(err => console.error('File Copy Error:', err));
+                  };
+                  console.log(`Uri: ${this.state.imageUri}, newFilePath: ${newFilePath}, Type: ${this.state.imageType}, Name: ${this.state.imageName}`);
             });
     };
     
