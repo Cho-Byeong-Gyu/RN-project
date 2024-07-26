@@ -49,37 +49,53 @@ class AxiosTest extends Component {
           };
     
           formData.append('dto', JSON.stringify(dto));
-    
+          // const jsonString = JSON.stringify(dto);
+          // const blob = await RNFetchBlob.polyfill.Blob.build(jsonString, { type: 'application/json;' });
+          // console.log("Blob 생성 테스트: ", blob);
+          // formData.append("dto", blob, 'dto.json');
+
+          this.state.imageUri.forEach((uri, index) => {
+            RNFS.stat(uri)
+                .then((stats) => {
+                    console.log(`Image ${index}:`, stats);
+                    if (stats.isFile()) {
+                        console.log(`파일이 저장된 Uri: ${uri}`);
+                        console.log(`파일크기: ${stats.size} bytes`);
+                        console.log(`최근 수정일: ${stats.mtime}`);
+                        console.log(`파일 존재여부: ${stats.isFile()}`);
+                    }
+                })
+                .catch((error) => {
+                    console.error(`Error retrieving file stats for URI ${uri}:`, error);
+                });
+          });
+   
           imageUri.forEach((filePath, index) => {
             formData.append('photos', {
                 uri: filePath,
-                name: imageName || `image_${index}.jpg`,
-                type: imageType
+                name: imageName,
+                type: imageType,
             });
           });
-    
+
+
           for (let pair of formData._parts) {
             console.log(pair[0] + ': ' + JSON.stringify(pair[1]));
           }
 
           const token = await getToken();
     
-          const response = await axios.post(
-            'http://223.130.131.166:8080/api/v1/house',
-            formData,
-            {
-              headers: {
+          const response = await fetch('http://223.130.131.166:8080/api/v1/house', {
+            method: 'POST',
+            headers: {
                 'Authorization': `Bearer ${token}`,
-                'Content-Type': 'multipart/form-data; boundary="boundary"',
-              },
-              transformRequest: (data, headers) => {
-                return data;
-              },
-            }
-          );
+                'Content-Type': 'multipart/form-data',
+            },
+            body: formData,
+        });
     
-          console.log(response.data);
-          this.props.navigation.navigate('검색', { refresh: true });
+        const responseData = await response.json();
+        console.log("Response JSON:", responseData);
         } catch (error) {
           console.log('숙소 데이터 보내는 도중 에러발생:', error);
           if (error.response) {
@@ -116,19 +132,19 @@ class AxiosTest extends Component {
 
                     const { uri, type, fileName } = response.assets[0];
                     const newFilePath = `${RNFS.TemporaryDirectoryPath}/${fileName}`;
-                    console.log(`Uri: ${uri}\ \n Type: ${type} \n Name: ${fileName}`);
-
+                    const fileUri = `file://${newFilePath}`
+                    console.log(`Uri: ${uri}\ \n Type: ${type} \n Name: ${fileName} \n fileUri: ${fileUri}`);
+                    
                     RNFS.copyFile(uri, newFilePath)
                     .then(() => {
                       this.setState(prevState => ({
-                          imageUri: [...prevState.imageUri, newFilePath], 
+                          imageUri: [...prevState.imageUri, fileUri], 
                           imageType: type,
                           imageName: fileName,
                       }));
                     })
                     .catch(err => console.error('File Copy Error:', err));
                   };
-                  console.log(`Uri: ${this.state.imageUri}, newFilePath: ${newFilePath}, Type: ${this.state.imageType}, Name: ${this.state.imageName}`);
             });
     };
     
