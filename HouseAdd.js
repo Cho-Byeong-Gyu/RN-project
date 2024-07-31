@@ -1,39 +1,29 @@
-import React, {Component, useState} from 'react';
+import React, {Component} from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image, ScrollView, TextInput } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
-import axios from 'axios';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import {launchImageLibrary} from 'react-native-image-picker';
 import { getToken } from './token'
+import RNFS from 'react-native-fs';
 
 //이미지
 import backBtnIMG from './Image/뒤로가기_아이콘.png';
 import houseAddIMG from './Image/사진추가_아이콘.png';
 import mapIMG from './Image/지도_미리보기.png';
-import houseIMG1 from './Image/여행지1.png';
-import houseIMG2 from './Image/여행지2.png';
-import houseIMG3 from './Image/여행지3.png';
-import houseIMG4 from './Image/여행지4.png';
-import houseIMG5 from './Image/여행지5.png';
-import houseIMG6 from './Image/여행지6.png';
-import houseIMG7 from './Image/여행지7.png';
-import houseIMG8 from './Image/여행지8.png';
-import houseIMG9 from './Image/여행지9.png';
+
+
 
 class HouseAddScreen extends Component {
     state = {
         hostName: '', 
         introText: '',
         freeService: '',
-        houseIMG: [],
         address: '',
         phoneNumber: '',
         price: '',
         maximumGuestNumber: '',
-        imageUri: null,
+        imageUri: [],
         imageType: null, 
         imageName: null,
-        // streetAddress: '아직 전달 못 받음',
         editHostNameState: false,
         editPhoneNumberState: false,
         editStreetAddressState: false,
@@ -41,9 +31,138 @@ class HouseAddScreen extends Component {
         editPriceState: false,
         editFreeServiceState: false,
         editIntroTextState: false,
+        // streetAddress: '아직 전달 못 받음',
       };
 
+
+    async postHouseData() {         // 숙소등록시 숙소와 관련된 데이터들을 서버에 보내는 함수
+        try {   
+            const {                   	// 서버에 보내야하는 데이터들을 관리
+            hostName,
+            introText,
+            phoneNumber,
+            freeService,
+            price,
+            address,
+            maximumGuestNumber,
+            imageUri,
+            imageType,
+            imageName,
+            } = this.state;
     
+            const formData = new FormData();      // fromData를 사용하기위해 FormData객체를 선언해주기
+    
+            const dto = {
+            hostName,
+            houseIntroduction: introText,
+            freeService,
+            phoneNumber,
+            registrantId: 1,
+            pricePerNight: Number(price.replace(/\D/g, '')),
+            address,
+            maxNumPeople: Number(maximumGuestNumber.replace(/\D/g, ''))
+            };
+    
+
+            const jsonString = JSON.stringify(dto);
+            const fileName = 'dto.json';
+            const filePath = `${RNFS.TemporaryDirectoryPath}/${fileName}`;
+
+            await RNFS.writeFile(filePath, jsonString, 'utf8');
+
+            formData.append('dto', {
+                uri: `file://${filePath}`,
+                type: 'application/json',
+                name: fileName
+            });
+
+            this.state.imageUri.forEach((uri, index) => {
+            RNFS.stat(uri)
+                .then((stats) => {
+                    console.log(`Image ${index}:`, stats);
+                    if (stats.isFile()) {
+                        console.log(`파일이 저장된 Uri: ${uri}`);
+                        console.log(`파일크기: ${stats.size} bytes`);
+                        console.log(`최근 수정일: ${stats.mtime}`);
+                        console.log(`파일 존재여부: ${stats.isFile()}`);
+                    }
+                })
+                .catch((error) => {
+                    console.error(`Error retrieving file stats for URI ${uri}:`, error);
+                });
+            });
+    
+            imageUri.forEach((filePath, index) => {
+            formData.append('photos', {
+                uri: filePath,
+                name: `image-${index}.jpg`,
+                type: imageType,
+            });
+            });
+
+            for (let pair of formData._parts) {
+            console.log(pair[0] + ': ' + JSON.stringify(pair[1]));
+            }
+    
+    
+            const token = await getToken();
+    
+            const response = await fetch('http://223.130.131.166:8080/api/v1/house', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    // 'Content-Type': 'multipart/form-data',
+                },
+                body: formData,
+            });
+        
+            const responseData = await response.json();
+            console.log("Response JSON:", responseData);
+            this.props.navigation.navigate('메인', { refresh: true });
+        } catch (error) {
+            console.log('숙소 데이터 보내는 도중 에러발생:', error);
+            if (error.response) {
+            console.log('Error status:', error.response.status);
+            console.log('Error data:', error.response.data);
+            console.log('Error headers:', error.response.headers);
+            } else if (error.request) {
+            console.log('Request that triggered error:', error.request);
+            } else {
+            console.log('Error message:', error.message);
+            }
+        }
+    }
+
+//////////////////////////////////////////////////////////////   
+    addImage = () => {                      // 이미지를 로컬앨범에서 선택하는 불러오는 함수
+        const options = {
+            mediaType: 'photo',
+            quality: 1, 
+            maxWidth: 300, 
+            maxHeight: 300, 
+            includeBase64: false, 
+        }
+        launchImageLibrary(options, response => {
+                if (response.didCancel) {
+                    console.log('사용자가 ImagaPicker를 취소했습니다.');
+                } else if (response.error) {
+                    console.log('ImagePicker내에서 에러가 발생했습니다: ', response.error);
+                } else if (response.customButton) {
+                    console.log('사용자가 custom버튼을 눌렀습니다: ', response.customButton);
+                } else {
+
+                    const { uri, type, fileName } = response.assets[0];
+                      this.setState(prevState => ({
+                          imageUri: [...prevState.imageUri, uri], 
+                          imageType: type,
+                          imageName: fileName,
+                      }));
+                  };
+            });
+    };
+
+
+//////////////////////////////////////////////////////////////    
     changeHostName = (inputText) => {
         this.setState({ hostName: inputText });
     };
@@ -69,8 +188,8 @@ class HouseAddScreen extends Component {
         this.setState({ introText: inputText });
     };
     
-
-
+    
+//////////////////////////////////////////////////////////////   
     editHostnameText = () => {
         this.setState(prevState => ({ editHostNameState: !prevState.editHostNameState }));
     };
@@ -92,125 +211,12 @@ class HouseAddScreen extends Component {
     editIntroText = () => {
         this.setState(prevState => ({ editIntroTextState: !prevState.editIntroTextState }));
     };
-
-  // const dto = {
-            //     hostName: hostName,
-            //     houseIntroduction: introText,
-            //     freeService: freeService,
-            //     phoneNumber: phoneNumber,
-            //     registrantId: 1,
-            //     pricePerNight: Number(price.replace(/\D/g, '')),
-            //     address: address,
-            //     maxNumPeople: Number(maximumGuestNumber.replace(/\D/g, '')),
-            // };
     
-            // const formData = new FormData();
-            // formData.append('dto', JSON.stringify(dto));
-           
-            // if (Array.isArray(houseIMG) && houseIMG.length > 0) {
-            //     forEach((houseIMG, index) => {
-            //         formData.append('photos', {
-            //             uri: houseIMG.uri,
-            //             type: houseIMG.type || 'image/jpeg',
-            //             name: houseIMG.fileName || `photo_${index}.jpg`
-            //         });
-            //     });
-            // } 
-            // else if (houseIMG.uri) {
-            //             formData.append('photos', {
-            // uri: houseIMG.uri,
-            // type: houseIMG.type || 'image/jpeg',
-            // name: houseIMG.fileName || 'photo.jpg'
-            //             });
-            // }
-
-    async postHouseData()  {                          // 모든 숙소 정보 리스트 데이터 axios를 활용한 api 통신을 통해 서버로 부터 불러오기
-        try {
-            const {
-                hostName,     
-                introText,
-                phoneNumber,
-                freeService,
-                price,
-                address,
-                maximumGuestNumber,
-            } = this.state;
-          
-            const {imageUri, imageType, imageName} = this.state;
-
-            const dto = { 
-                hostName: hostName,
-                houseIntroduction: introText,
-                freeService: freeService,
-                phoneNumber: phoneNumber,
-                registrantId: 1,
-                pricePerNight: Number(price.replace(/\D/g, '')),
-                address: address,
-                maxNumPeople: Number(maximumGuestNumber.replace(/\D/g, '')),
-            };
-            const formData = new FormData();
-            formData.append('dto', JSON.stringify(dto));
-            if (imageUri) {
-              formData.append('photos', {
-                uri: imageUri,
-                type: imageType,
-                name: imageName,
-              });
-            }
-
-            const token = await getToken();
-            
-            const response = await axios.post('http://223.130.131.166:8080/api/v1/house', formData ,{
-                headers: { 'Authorization': `Bearer ${token}`,
-                        'Content-Type': 'multipart/form-data'
-            },
-            })
-            
-            console.log(response.data);
-            this.props.navigation.navigate('검색', { refresh: true });
-
-        } catch(error) {
-            if (error.response) {
-              console.log('Error status:', error.response.status);
-              console.log('Error data:', error.response.data);
-              console.log('Error headers:', error.response.headers);
-            } else if (error.request) {
-              console.log('No response received:', error.request);
-            } else {
-              console.log('Error message:', error.message);
-            }
-            console.log('Error config:', error.config);
-          }
-    }
-
-    addImage = () => {
-
-        launchImageLibrary({mediaType: 'photo'}, response => {
-                if (response.didCancel) {
-                    console.log('사용자가 ImagaPicker를 취소했습니다.');
-                } else if (response.error) {
-                    console.log('ImagePicker내에서 에러가 발생했습니다: ', response.error);
-                } else if (response.customButton) {
-                    console.log('사용자가 커스텀버튼을 눌렀습니다: ', response.customButton);
-                } else {
-                    const source = { uri: response.assets[0]};
-                    this.setState({
-                        imageUri: source.uri,
-                        imageType: source.type,
-                        imageName: source.fileName,
-                    });
-
-                }
-            });
-    };
-
-
     
 render() {
 
-    const { hostName, editHostNameState, phoneNumber, editPhoneNumberState, address, houseIMG,
-        streetAddress, editStreetAddressState, maximumGuestNumber, editMaximumGuestNumberState, 
-        price, editPriceState, freeService, editFreeServiceState, introText, editIntroTextState } = this.state;
+    const { hostName, editHostNameState, phoneNumber, editPhoneNumberState, address, editStreetAddressState,  maximumGuestNumber, 
+        editMaximumGuestNumberState, price, editPriceState, freeService, editFreeServiceState, introText, editIntroTextState } = this.state;
 
     return (
         <LinearGradient
@@ -295,11 +301,19 @@ render() {
                         </TouchableOpacity>
                     </View>
                     <View style={styles.houseIMGView}>
-                        <ScrollView style={styles.addHouseIMGView}  
-                            showsHorizontalScrollIndicator={false}  
-                            horizontal={true}>
-                        <Image style={styles.houseIMG} source={this.state.imageUri} />
-                        </ScrollView>
+                    <ScrollView style={styles.addHouseIMGView}  
+                        showsHorizontalScrollIndicator={false}  
+                        horizontal={true}>
+                            {this.state.imageUri.length > 0 ? (
+                                this.state.imageUri.map((uri, index) => (
+                                    <Image key={index} style={styles.houseIMG} source={{ uri: uri }}/>
+                                ))
+                            ) : (
+                                <TouchableOpacity style={styles.ModifySelectView} onPress={this.addImage}>
+                                  <Image style={styles.houseIMG} source={houseAddIMG}/>
+                                </TouchableOpacity>
+                            )}
+                    </ScrollView>
                     </View>
                  
                     <View style={styles.hostNameInfoView}>
@@ -361,7 +375,7 @@ render() {
   }
 }
 
-// 스타일 시트
+// 스타일 시트  내폰 width-300, 애뮬레이터 width-340세팅 + 이미지 크기 가로,세로 각각200 (애뮬레이터)
 const styles = StyleSheet.create({
   background: {                     // 전체화면 세팅                     
         flex: 1,
@@ -418,7 +432,7 @@ const styles = StyleSheet.create({
         marginTop: '4.4%',
         marginBottom: '2%',
         fontSize: 16,
-        width: 340,
+        width: 300,                       
     },
     InfoModify:{                           // 호스트 정보 수정하기
         fontSize: 17,
@@ -440,14 +454,14 @@ const styles = StyleSheet.create({
         backgroundColor:'#E2E2E2',
     },
     houseIMG: {                        // 숙소 사진 등록
-        width: 200,
-        height: 200,
+        width: 170,                     
+        height: 160,
         alignItems:'center',
         justifyContent: 'center',
     },
     hostInfoText: {                        // 호스트 정보 입력 value 텍스트
         fontSize: 16,
-        width: 340,
+        width: 300,
         color: 'gray',
         margin: 0,
         padding: 0,
@@ -457,7 +471,7 @@ const styles = StyleSheet.create({
     },
     houseInfoText: {                        // 숙소 소개글
         fontSize: 16,
-        width: 340,
+        width: 300,
         color: 'gray',
         margin: 0,
         padding: 0,
@@ -469,7 +483,7 @@ const styles = StyleSheet.create({
     },
     hostInfoAddressText: {                  // 주소, 도로명 주소 입력받는 본문 텍스트
         fontSize: 16,
-        width: 340,
+        width: 300,
         color: 'gray',
         height: 32,
         textAlignVertical: 'top',
@@ -524,7 +538,7 @@ const styles = StyleSheet.create({
     },
     ruleAlertText: {                          // 숙소 이용규칙 패널티에 대한 텍스트
         fontSize: 14,
-        width: 340,
+        width: 300,
         color: '#4285F4',
         marginTop: '5.5%',
         textAlign:'center',

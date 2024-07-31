@@ -1,10 +1,10 @@
 import React, {Component} from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ImageBackground, Image, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image, ScrollView } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import {launchImageLibrary} from 'react-native-image-picker';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { getToken, getRefreshToken, refreshAccessToken } from './token';
+import { getToken } from './token';
 
 
 //이미지
@@ -47,7 +47,7 @@ class MyInfoModifyScreen extends Component {
                     email: email,
                     phoneNum : phoneNum, 
                 });
-                console.log(`Name: ${name}, Email: ${email}, PhoneNum: ${phoneNum}`);
+                console.log('응답받은 데이터:', response.data);
             }
 
         } catch(error) {
@@ -64,6 +64,10 @@ class MyInfoModifyScreen extends Component {
           }
     }
 
+
+
+
+
     async logout() {
         try {
           const accessToken = await AsyncStorage.getItem('userToken');
@@ -78,7 +82,7 @@ class MyInfoModifyScreen extends Component {
           await AsyncStorage.removeItem('userToken');
           await AsyncStorage.removeItem('refreshToken');
       
-          console.log('로그아웃에 성공하였습니다.:', response.data);
+          console.log('로그아웃에 성공하였습니다!');
           this.props.navigation.navigate("로그인");
       
         } catch(error) {
@@ -94,6 +98,8 @@ class MyInfoModifyScreen extends Component {
             console.log('Error config:', error.config);
           }
       }
+
+
 
     modifyImage = () => {                  // 이미지 수정하는 함수
 
