@@ -17,8 +17,18 @@ class MyInfoScreen extends Component {
         phoneNum: '',
     }
 
-    componentDidMount() {                          // 페이지 로딩시 유저정보 불러오는 함수
-        this.getUserInfoData();
+    componentDidMount() {
+        this.focusListener = this.props.navigation.addListener('focus', () => {
+            console.log('DOM에서 먼저 렌더링 완료');
+            this.getUserInfoData();
+        });
+    }
+    
+    componentWillUnmount() {
+        if (this.focusListener) {
+            console.log('DOM에서 해당 리스너 제거완료');
+            this.focusListener();
+        }
     }
 
 
@@ -104,9 +114,9 @@ class MyInfoScreen extends Component {
                 <TouchableOpacity style={styles.settingOption} onPress={() => this.props.navigation.navigate('숙소정보수정')}>
                     <Text style={styles.optionText}> 숙소정보 수정하기</Text>    
                 </TouchableOpacity>                                    
-                <TouchableOpacity style={styles.settingOption}>
+                {/* <TouchableOpacity style={styles.settingOption}>
                     <Text style={styles.optionText} onPress={() => this.props.navigation.navigate('후기작성')}> 후기 작성하러가기 </Text>    
-                </TouchableOpacity>                                    
+                </TouchableOpacity>                                     */}
 
             </View>
             </ScrollView>

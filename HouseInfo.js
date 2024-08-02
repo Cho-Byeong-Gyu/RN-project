@@ -14,7 +14,6 @@ import mapIMG from './Image/지도_미리보기.png';
 class HouseInfoScreen extends Component {
 
     state = {
-
         places: [                                   // 목록에 띄울 데이터들 관리
             { id: 1, 
                 name: "", 
@@ -39,12 +38,16 @@ class HouseInfoScreen extends Component {
 
     componentDidMount() {
         this.focusListener = this.props.navigation.addListener('focus', () => {
-            this.getHouseListData();
+            console.log('DOM에서 먼저 렌더링 완료');
+            this.getHouseData();
         });
     }
     
     componentWillUnmount() {
-        this.focusListener.remove();
+        if (this.focusListener) {
+            console.log('DOM에서 해당 리스너 제거완료');
+            this.focusListener();
+        }
     }
     
     
@@ -52,7 +55,7 @@ class HouseInfoScreen extends Component {
         this.props.navigation.navigate('예약', { houseId: houseId });
     }
 
-    async getHouseListData() {                      // axios를 활용한 api통신을 통해 서버로부터 숙소 리스트들을 불러오는 함수
+    async getHouseData() {                      // axios를 활용한 api통신을 통해 서버로부터 숙소 리스트들을 불러오는 함수
         try{
             const { houseId } = this.props.route.params;
             const token = await getToken();
@@ -138,7 +141,7 @@ class HouseInfoScreen extends Component {
                             <Text style={styles.houseNameText}>{place.name}님의 거주지</Text>
                         </View>
                         <View style={styles.houseReviewView}>
-                            <TouchableOpacity style={styles.houseReview} onPress={ ()=>this.props.navigation.navigate('후기', { name: place.name })}>
+                            <TouchableOpacity style={styles.houseReview} onPress={ ()=>this.props.navigation.navigate('후기', { houseId: place.id, name: place.name })}>
                                 <Image style={styles.houseReviewIcon} source={HouseReviewIconIMG} />
                                 <Text style={styles.houseReviewText}>{place.reviewScore} ({place.reviewCount}개의 후기)</Text>
                             </TouchableOpacity>

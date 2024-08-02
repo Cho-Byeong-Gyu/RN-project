@@ -1,51 +1,62 @@
-import React, {Component, useState} from 'react';
+import React, { Component } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image, ScrollView, TextInput } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { Rating } from 'react-native-ratings';
-import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import { launchImageLibrary} from 'react-native-image-picker';
+import { getToken } from './token'
+import RNFS from 'react-native-fs';
 
 //이미지
 import backBtnIMG from './Image/뒤로가기_아이콘.png';
 import houseAddIMG from './Image/사진추가_아이콘.png';
-import houseIMG1 from './Image/여행지1.png';
-import houseIMG2 from './Image/여행지2.png';
-import houseIMG3 from './Image/여행지3.png';
-import houseIMG4 from './Image/여행지4.png';
-import houseIMG5 from './Image/여행지5.png';
-import houseIMG6 from './Image/여행지6.png';
-import houseIMG7 from './Image/여행지7.png';
-import houseIMG8 from './Image/여행지8.png';
-import houseIMG9 from './Image/여행지9.png';
 
 
 class ReviewAddScreen extends Component {
     state = {
         rating: 3, 
-        reviewIMG: houseAddIMG,
+        tempRating: 3,
+        reviewIMG: [],
+        reviewText: "",
+        imageType: null, 
     };
 
-    ratingCompleted = (rating) => {
-        const roundedRating = parseFloat(rating.toFixed(1));
+    ratingCompleted = (rating) => {          // 정수 형태로 평점 저장
+        const roundedRating = Math.round(rating);
         this.setState({ rating: roundedRating });
-      };
-
-    changeInputText = (inputText) => {
-        this.setState({ reviewText: inputText });
     };
 
-    addImage = () => {
+    handleRating = (rating) => {            // 평점 선택 UI 정수형태로 실시간 반영
+        this.setState({ tempRating: rating });
+    }
 
-        launchImageLibrary({}, response => {
+    // changeInputText = (inputText) => {
+    //     this.setState({ reviewText: inputText });
+    // };
+
+    addImage = () => {                      // 이미지를 로컬앨범에서 선택하는 불러오는 함수
+        const options = {
+            mediaType: 'photo',
+            quality: 1, 
+            maxWidth: 300, 
+            maxHeight: 300, 
+            includeBase64: false, 
+        }
+        launchImageLibrary(options, response => {
                 if (response.didCancel) {
-                    console.log('User cancelled image picker');
+                    console.log('사용자가 ImagaPicker를 취소했습니다.');
                 } else if (response.error) {
-                    console.log('ImagePicker Error: ', response.error);
+                    console.log('ImagePicker내에서 에러가 발생했습니다: ', response.error);
                 } else if (response.customButton) {
-                    console.log('User tapped custom button: ', response.customButton);
+                    console.log('사용자가 custom버튼을 눌렀습니다: ', response.customButton);
                 } else {
-                    const source = { uri: response.assets[0].uri };
-                    this.setState({ reviewIMG: source });
-                }
+
+                    const { uri, type, fileName } = response.assets[0];
+                      this.setState(prevState => ({
+                          reviewIMG: [...prevState.reviewIMG, uri], 
+                          imageType: type,
+                          imageName: fileName,
+                      }));
+                  };
             });
     };
 
@@ -55,7 +66,106 @@ class ReviewAddScreen extends Component {
         })
     }
 
+    async postReview() {                // 리뷰 등록시 리뷰데이터 서버에 보내는 함수
+        try {   
+            const {                   	// 서버에 보내야하는 데이터들을 관리
+                rating,
+                reviewIMG,
+                reviewText,
+                imageType,
+            } = this.state;
+
+            const {houseId, name} = this.props.route.params;
+    
+            const formData = new FormData();      // fromData를 사용하기위해 FormData객체를 선언해주기
+    
+            const dto = {
+                content: reviewText,
+                star: `${rating}`,
+                houseId: houseId,
+            };
+    
+
+            const jsonString = JSON.stringify(dto);
+            const fileName = 'dto.json';
+            const filePath = `${RNFS.TemporaryDirectoryPath}/${fileName}`;
+
+            await RNFS.writeFile(filePath, jsonString, 'utf8');
+
+            formData.append('dto', {
+                uri: `file://${filePath}`,
+                type: 'application/json',
+                name: fileName
+            });
+
+            this.state.reviewIMG.forEach((uri, index) => {
+            RNFS.stat(uri)
+                .then((stats) => {
+                    console.log(`Image ${index}:`, stats);
+                    if (stats.isFile()) {
+                        console.log(`파일이 저장된 Uri: ${uri}`);
+                        console.log(`파일크기: ${stats.size} bytes`);
+                        console.log(`최근 수정일: ${stats.mtime}`);
+                        console.log(`파일 존재여부: ${stats.isFile()}`);
+                    }
+                })
+                .catch((error) => {
+                    console.error(`Error retrieving file stats for URI ${uri}:`, error);
+                });
+            });
+    
+            if (reviewIMG.length > 0) {
+                reviewIMG.forEach((uri, index) => {
+                    formData.append('photos', {
+                        uri: uri,
+                        name: `image-${index}.jpg`,
+                        type: imageType || 'image/jpeg',
+                    });
+                });
+            } else {
+                formData.append('photos', {
+                    uri: 'daklmwdmal',
+                    name: `test`,
+                    type: 'application/json'
+                });
+            }
+      
+            for (let pair of formData._parts) {
+            console.log(pair[0] + ': ' + JSON.stringify(pair[1]));
+            };
+    
+    
+            const token = await getToken();
+    
+            const response = await fetch('http://223.130.131.166:8080/api/v1/review', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    // 'Content-Type': 'multipart/form-data',
+                },
+                body: formData,
+            });
+        
+            const responseData = await response.json();
+            console.log("Response JSON:", responseData);
+            this.props.navigation.navigate('메인', { refresh: true });
+        } catch (error) {
+            console.log('숙소 데이터 보내는 도중 에러발생:', error);
+            if (error.response) {
+            console.log('Error status:', error.response.status);
+            console.log('Error data:', error.response.data);
+            console.log('Error headers:', error.response.headers);
+            } else if (error.request) {
+            console.log('Request that triggered error:', error.request);
+            } else {
+            console.log('Error message:', error.message);
+            }
+        }
+    }
+
   render() {
+
+    const { name } = this.props.route.params;
 
     return (
         <LinearGradient
@@ -73,19 +183,20 @@ class ReviewAddScreen extends Component {
                 </View>
 
                 <View style={styles.reviewScoreView}>
-                    <Text style={styles.InterviewText}> 박양순님과의 스테이는 어떠셨나요? </Text>
+                    <Text style={styles.InterviewText}> {name}님과의 스테이는 어떠셨나요? </Text>
                     <View style={styles.ratingView}>
                     <Rating
-                         type='custom'
-                         ratingCount={5}
-                         imageSize={20}
-                         startingValue={this.state.rating}
-                         ratingColor={'#F4CD42'}      
-                         fractions={2}             
-                         onFinishRating={this.ratingCompleted}
-                         style={styles.rating}
-                         />
-                    <Text style={styles.ratingText}> {this.state.rating}점 </Text>
+                        type='custom'
+                        ratingCount={5}
+                        imageSize={20}
+                        startingValue={this.state.rating}
+                        ratingColor={'#F4CD42'}
+                        onFinishRating={this.ratingCompleted}
+                        onSwipeRating={this.handleRating} 
+                        style={styles.rating}
+                    />
+
+                    <Text style={styles.ratingText}> {Math.round(this.state.rating)}점 </Text>
                     </View>       
                 </View>
 
@@ -97,9 +208,19 @@ class ReviewAddScreen extends Component {
                 </View>
 
                 <View style={styles.reviewIMGView}>
-                    <ScrollView styels={styles.reviewIMGScrollView}showsHorizontalScrollIndicator={false} horizontal={true}>
-                            <Image style={styles.reviewIMG} source={this.state.reviewIMG}/>
-                    </ScrollView>
+                <ScrollView style={styles.addHouseIMGView}  
+                        showsHorizontalScrollIndicator={false}  
+                        horizontal={true}>
+                            {this.state.reviewIMG.length > 0 ? (
+                                this.state.reviewIMG.map((uri, index) => (
+                                    <Image key={index} style={styles.houseIMG} source={{ uri: uri }}/>
+                                ))
+                            ) : (
+                                <TouchableOpacity style={styles.ModifySelectView} onPress={this.addImage}>
+                                  <Image style={styles.houseIMG} source={houseAddIMG}/>
+                                </TouchableOpacity>
+                            )}
+                </ScrollView>
                 </View>
 
                 <View style={styles.reviewTextInputView} >
@@ -107,7 +228,7 @@ class ReviewAddScreen extends Component {
                 </View>
                 
                 <View style={styles.reservationBtnView}>
-                <TouchableOpacity style={styles.reservationBtn} onPress={() => this.props.navigation.goBack()}>
+                <TouchableOpacity style={styles.reservationBtn} onPress={() => this.postReview()}>
                     <Text style={styles.reservationBtnText}> 후기 작성 완료</Text>
                 </TouchableOpacity>
                 </View>
@@ -171,8 +292,8 @@ const styles = StyleSheet.create({
     houseIMG:{                                // 숙소 이미지
         alignItems: 'center',
         borderRadius: 10, 
-        width: 100,
-        height: 100,
+        width: 200,
+        height: 200,
         resizeMode: 'cover',
         margin: '2%',
     },
