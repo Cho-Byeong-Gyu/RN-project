@@ -17,7 +17,7 @@
     "@react-native-google-signin/google-signin": "^12.2.1",
     "@react-navigation/bottom-tabs": "^6.6.0",
     "@react-navigation/native-stack": "^6.10.0",
-    "axios": "^1.7.2",
+    "axios": "^1.7.3",
     "express": "^4.19.2",
     "hangul": "^1.0.0",
     "hangul-js": "^0.2.6",

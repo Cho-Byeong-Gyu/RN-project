@@ -1,15 +1,14 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Button } from 'react-native';
 import { GoogleSignin, GoogleSigninButton } from '@react-native-google-signin/google-signin';
 import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
 
 GoogleSignin.configure({
-  webClientId: ' 응애 ',
+  webClientId: '412626397279-eg75216s42no729d1cmftmkns983ouhq.apps.googleusercontent.com',
 });
 
-
 const GoogleAPIScreen = () => {
-  const signIn = async () => {
+  const googleSignin = async () => {
     try {
       await GoogleSignin.hasPlayServices();
       const userInfo = await GoogleSignin.signIn();
@@ -19,15 +18,24 @@ const GoogleAPIScreen = () => {
     }
   };
 
-  return (
-    <View>
-       {/* <GoogleSigninButton
-         style={{ width: 192, height: 48 }}
-         size={GoogleSigninButton.Size.Wide}
-         color={GoogleSigninButton.Color.Dark}
-         onPress={signIn}
-       /> */}
+  const googleSignout = async () => {
+    try {
+      await GoogleSignin.signOut();
+      console.log('User signed out');
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
+  return (
+    <View style={styles.container}>
+      <GoogleSigninButton
+        style={{ width: 192, height: 48 }}
+        size={GoogleSigninButton.Size.Wide}
+        color={GoogleSigninButton.Color.Dark}
+        onPress={googleSignin}
+      />
+      <Button title="Sign Out" onPress={googleSignout} />
       <MapView
         provider={PROVIDER_GOOGLE} 
         initialRegion={{
@@ -38,11 +46,14 @@ const GoogleAPIScreen = () => {
         }}
         style={styles.map}
       />
-   	</View>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
   map: {
     height: "100%",
     width: "100%"
