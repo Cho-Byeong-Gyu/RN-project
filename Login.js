@@ -23,6 +23,10 @@ class LoginScreen extends Component {
     try {
       console.log(userInfo);
       console.log(socialType);
+      console.log(userInfo.user.email);
+      console.log(userInfo.user.id);
+      console.log(userInfo.user.name);
+      console.log(userInfo.user.givenName);
 
       const response = await axios.post('http://223.130.131.166:8080/api/v1/auth/login', {
         email: userInfo.user.email,
